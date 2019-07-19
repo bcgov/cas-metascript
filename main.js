@@ -47,9 +47,9 @@ async function main(){
         question.send.dataset_query.query['order-by'] = question.mbql['order-by'];
         question.send.dataset_query.type = question.dataset_query.type;
         question.send.dataset_query.database = question.dataset_query.database;
-        // console.log(util.inspect(question, false, null, true /* enable colors */));
-        await postQuestion('/card/', question)
-        console.log(`\nQuestion ${i}, ID ${question.id} finished`);
+        console.log(util.inspect(question, false, null, true /* enable colors */));
+        // await postQuestion('/card/', question)
+        // console.log(`\nQuestion ${i}, ID ${question.id} finished`);
       }
       catch(e) { console.log(util.inspect(e, false, null, true /* enable colors */)); }
       

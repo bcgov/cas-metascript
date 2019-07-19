@@ -6,7 +6,7 @@ const scrubMetabaseSQL = (question, sql) => {
   const schemaRegex = /ggircs\.|ciip\./gi;
   const joinRegex = /[A-Z]*\s(?=JOIN).+?((?=WHERE))|[A-Z]*\s(?=JOIN).+?((?=GROUP))|[A-Z]*\s(?=JOIN).+?((?=ORDER))|[A-Z]*\s(?=JOIN).+?((?=LIMIT))/gi;
   const aliasRegex = /\sAS\s.*?(?=\,)|\sAS\s.*?(?=\s)/gi;
-  const regexArray = [quoteRegex, schemaRegex, joinRegex];
+  const regexArray = [quoteRegex, schemaRegex];
   let scrubbedSQL = sql;
   
   regexArray.forEach(regex => {
