@@ -21,11 +21,19 @@ mbql_query = {
 }
 
 // astify parses the sql query into a traversable tree
-const ast = parser.astify(question.sql);
-
+const ast = parser.astify(`
+select emission.gas_type, facility.facility_name
+from ggircs.emission
+join facility on emission.facility_id = facility.id
+where emission.gas_type = 'N20'
+order by facility.facility_name;
+`);//question.sql);
+console.log(util.inspect(ast, false, null, true /* enable colors */));
 // Add the from table name to the source table
 mbql_query.source_table.push(ast[0].from[0].table);
 
+
+// *** NEEDS THE FROM CLAUSE STUFF FROM AST *** 
 /*************************************
  *          SELECT CLAUSE            *
  *************************************/
@@ -63,7 +71,7 @@ if (select !== '*') {
     }
   });
 }
-
+// *** NEEDS THE FROM CLAUSE STUFF FROM AST ***
 /*************************************
  *          WHERE CLAUSE             *
  *************************************/
@@ -94,8 +102,8 @@ const traverseObject = (obj, array) => {
     if (!obj.left.hasOwnProperty('left')) {
       
     }
-    traverse(obj.left, array, 'left')
-    traverse(obj.right, array, 'right')
+    traverse(obj.left, array, 'left');
+    traverse(obj.right, array, 'right');
   }
   // If the current object has no 'left' node then it is a value, push the value
   else {
@@ -103,13 +111,13 @@ const traverseObject = (obj, array) => {
       const fkeyTest = /\w+__/gi;
       const fkeyTableName = /\w+(?=__via)/gi;
       // test for join by searching astified table for pattern 'table__via__table_id 
-      if (fkeyTest.test(obj.table)) {
+      if (obj.table !== mbql_query.source_table[0]) {
         const fk = obj.table.replace(fkeyTest, '');
         const foreignTableName = obj.table.match(fkeyTableName)[0]
-        array.push([])
+        array.push([]);
         array = array[array.length-1]
-        array.push('fk->')
-        array.push(fk)
+        array.push('fk->');
+        array.push(fk);
         array.push(`${foreignTableName}.${obj.column}`)
         mbql_query.columns.push([fk]);
         mbql_query.foreign_columns.push([foreignTableName, obj.column])

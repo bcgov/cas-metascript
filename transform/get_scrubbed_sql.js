@@ -1,11 +1,17 @@
 const get_native_sql = require('../api_calls/get_native_sql');
+const call_api = require('../api_calls/call_api');
 const util = require('util');
 
-const scrubMetabaseSQL = (question, sql) => {
+const scrubMetabaseSQL = (question, sql, schemas) => {
   const quoteRegex = /"/g;
-  const schemaRegex = /ggircs\.|ciip\./gi;
-  const joinRegex = /[A-Z]*\s(?=JOIN).+?((?=WHERE))|[A-Z]*\s(?=JOIN).+?((?=GROUP))|[A-Z]*\s(?=JOIN).+?((?=ORDER))|[A-Z]*\s(?=JOIN).+?((?=LIMIT))/gi;
-  const aliasRegex = /\sAS\s.*?(?=\,)|\sAS\s.*?(?=\s)/gi;
+  let schemaString = '';
+  schemas.forEach((schema, key, schemas) => {
+    if (Object.is(schemas.length - 1, key))
+      schemaString += `${schema}\.`;
+    else
+      schemaString += `${schema}\.|`;
+  })
+  const schemaRegex = new RegExp(schemaString, 'gi');
   const regexArray = [quoteRegex, schemaRegex];
   let scrubbedSQL = sql;
   
@@ -24,8 +30,9 @@ async function getScrubbedSQL(question) {
   
   try{
     const sqlFromMetabase = await get_native_sql(question.id);
+    const schemas = await call_api(`/database/${question.database_id}/schemas`);
     if (sqlFromMetabase) {
-      const scrubbedSQL = scrubMetabaseSQL(question, sqlFromMetabase);
+      const scrubbedSQL = scrubMetabaseSQL(question, sqlFromMetabase, schemas);
       return scrubbedSQL;
     }
   }
