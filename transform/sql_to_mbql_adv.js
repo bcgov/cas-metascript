@@ -163,11 +163,11 @@ const traverseObject = (obj, array, from) => {
         /* Find the foreign key in the join clause (if the foreign table is on the right side of the clause,
            then the foreign key in the source table is on the left side of the clause) */
         if (joinTable.on.right.table === tableName.table || joinTable.on.right.table === tableName.alias) {
-          array.push(['fk->', `${joinTable.on.left.column}`, `${tableName.table}.${obj.column}`]);
+          array.push('fk->', `${joinTable.on.left.column}`, `${tableName.table}.${obj.column}`);
           mbql_query.columns.push([`${joinTable.on.left.column}`]);
         }
         else {
-          array.push(['fk->', `${joinTable.on.right.column}`, `${tableName.table}.${obj.column}`]);
+          array.push('fk->', `${joinTable.on.right.column}`, `${tableName.table}.${obj.column}`);
           mbql_query.columns.push([`${joinTable.on.right.column}`]);
         }
         mbql_query.foreign_columns.push([tableName.table, obj.column])
@@ -249,7 +249,7 @@ if (orderBy) {
         /* Find the foreign key in the join clause (if the foreign table is on the right side of the clause,
            then the foreign key in the source table is on the left side of the clause) */
         if (joinTable.on.right.table === tableName.table || joinTable.on.right.table === tableName.alias) {
-          mbql_query['order-by'].push(['fk->', `${joinTable.on.left.column}`, `${tableName.table}.${orderedField.expr.column}`]);
+          mbql_query['order-by'].push([orderedField.type, ['fk->', `${joinTable.on.left.column}`, `${tableName.table}.${orderedField.expr.column}`]]);
           mbql_query.columns.push([`${joinTable.on.left.column}`]);
         }
         else {
