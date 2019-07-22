@@ -7,7 +7,7 @@ async function removeDimensionFields(question) {
   
   for (let i = 0; i < fields.length; i++) {
     if (fields[i][0] === 'fk->') {
-      const fieldDetails = await callAPI(`/field/${fields[i][1][1]}`, 'GET');
+      const fieldDetails = await callAPI(session, `/field/${fields[i][1][1]}`, 'GET');
       if (fieldDetails.dimensions === undefined)
         filteredFields.push(fields[i]);
       else if (fieldDetails.dimensions.field_id === undefined  || (fields[i][1][1] === fieldDetails.dimensions.field_id && fields[i][2][1] !== fieldDetails.dimensions.human_readable_field_id))

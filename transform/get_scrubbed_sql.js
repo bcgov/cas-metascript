@@ -26,11 +26,11 @@ const scrubMetabaseSQL = (question, sql, schemas) => {
   return scrubbedSQL;
 }
 
-async function getScrubbedSQL(question) {
+async function getScrubbedSQL(question, session) {
   
   try{
-    const sqlFromMetabase = await get_native_sql(question.id);
-    const schemas = await call_api(`/database/${question.database_id}/schemas`);
+    const sqlFromMetabase = await get_native_sql(question.id, session);
+    const schemas = await call_api(session, `/database/${question.database_id}/schemas`);
     if (sqlFromMetabase) {
       const scrubbedSQL = scrubMetabaseSQL(question, sqlFromMetabase, schemas);
       return scrubbedSQL;

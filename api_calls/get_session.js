@@ -8,7 +8,7 @@ async function getSession() {
     password: process.env.METABASE_PASSWORD,
   }
 
-  const url = `https://metabase-wksv3k-test.pathfinder.gov.bc.ca/api/session`;
+  const url = `https://metabase-wksv3k-dev.pathfinder.gov.bc.ca/api/session`;
 
   const param = {
     headers: {

@@ -9,8 +9,9 @@ const postQuestion = require('./scratch/post_test');
 const fs = require('fs');
 
 async function main(){
+  const session = await getSession();
   const metabaseQuestions = [];
-  const allDatabaseCards = await callAPI('/card/', 'GET', null, {database: 5});
+  const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: 5});
   const questionObject = {
     questions: []
   }
@@ -19,8 +20,8 @@ async function main(){
     metabaseQuestions.push({card, id: card.id, database_id: card.database_id, name: card.name, dataset_query: card.dataset_query, sql: ''})
   });
 
-  const metadata = await callAPI(`/database/5/metadata`, 'GET')
-  const savedQuestionMetadata = await callAPI(`/database/-1337/metadata`, 'GET')
+  const metadata = await callAPI(session, `/database/5/metadata`, 'GET')
+  const savedQuestionMetadata = await callAPI(session, `/database/-1337/metadata`, 'GET')
 
   const filteredMetabaseQuestions = removeDeprecatedCards(metabaseQuestions, metadata, savedQuestionMetadata);
 
@@ -32,7 +33,7 @@ async function main(){
       let question = filteredMetabaseQuestions[i];
 
       try {
-        const scrubbedSQL = await getScrubbedSQL(question);
+        const scrubbedSQL = await getScrubbedSQL(question, session);
         question.sql = scrubbedSQL;
 
         questionObject.questions.push(question);

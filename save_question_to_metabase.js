@@ -10,7 +10,7 @@ const fs = require('fs');
 
 async function save_question_to_metabase() {
 
-
+  const session = await getSession()
   const files = fs.readdirSync('./output');
   const latestFile = {
     file: '',
@@ -30,8 +30,8 @@ async function save_question_to_metabase() {
   for (let i = 0; i < data.questions.length; i++) {
     let question = data.questions[i];
 
-    question = await convert(question);
-    question = await removeDimensionFields(question);
+    question = await convert(question, session);
+    question = await removeDimensionFields(question, session);
 
     question.send = {
       dataset_query: {
@@ -48,7 +48,7 @@ async function save_question_to_metabase() {
     question.send.dataset_query.type = question.dataset_query.type;
     question.send.dataset_query.database = question.dataset_query.database;
     console.log('send')
-    // console.log(util.inspect(question.send, false, null, true));
+    console.log(util.inspect(question.send, false, null, true));
   // await postQuestion('/card/', question)
   // console.log(`\nQuestion ${i}, ID ${question.id} finished`);
 

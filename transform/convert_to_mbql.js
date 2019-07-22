@@ -1,5 +1,5 @@
 const util = require('util');
-const mbqlFormat = require('./sql_to_mbql_adv');
+const sqlToMbql = require('./sql_to_mbql_adv');
 const callAPI = require('../api_calls/call_api');
 
 /**
@@ -32,8 +32,8 @@ const replaceValues = (filter, columns, foreign_columns) => {
  * mapSQLValues takes data from a metabase API call then uses this data to convert named values in
  * the parsedSQL object to ID's (ie source_table: 'facility_details' --> source:table: 219)
  */
-async function mapSQLValuesToID(question) {
-  const metadata = await callAPI(`/database/${question.database_id}/metadata`, 'GET')
+async function mapSQLValuesToID(question, session) {
+  const metadata = await callAPI(session, `/database/${question.database_id}/metadata`, 'GET')
   metadata.tables.forEach(table => {
     if (table.name === question.mbql.source_table[0] && table.schema.toUpperCase() === 'GGIRCS') {
       question.mbql.source_table.push(table.id)
@@ -65,9 +65,9 @@ async function mapSQLValuesToID(question) {
   return question
 }
 
-const convertToMBQL = (question) => {
-  question.mbql = mbqlFormat(question);
-  const convertedQuestion = mapSQLValuesToID(question)
+const convertToMBQL = (question, session) => {
+  question.mbql = sqlToMbql(question);
+  const convertedQuestion = mapSQLValuesToID(question, session)
   return convertedQuestion;
 }
 
