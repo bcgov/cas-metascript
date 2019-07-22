@@ -1,10 +1,8 @@
 const util = require('util');
 const callAPI = require('./api_calls/call_api');
 const getSession = require('./api_calls/get_session');
-const getScrubbedSQL = require('./transform/get_scrubbed_sql');
 const convert = require('./transform/convert_to_mbql');
 const removeDimensionFields = require('./transform/remove_dimension_fields');
-const removeDeprecatedCards = require('./transform/remove_deprecated_cards');
 const postQuestion = require('./scratch/post_test');
 const fs = require('fs');
 
