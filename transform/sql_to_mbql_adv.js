@@ -29,7 +29,6 @@ where emission.gas_type = 'N20'
 and facility.facility_type = 'LFO'
 order by facility.facility_name;
 `
-
 // astify parses the sql query into a traversable tree
 // const ast = parser.astify(testSQL);
 const ast = parser.astify(question.sql);

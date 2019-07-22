@@ -1,6 +1,6 @@
 const callAPI = require('../api_calls/call_api');
 
-async function removeDimensionFields(question) {
+async function removeDimensionFields(question, session) {
 
   const fields = question.mbql.fields;
   const filteredFields = []

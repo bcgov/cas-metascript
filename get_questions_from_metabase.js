@@ -9,7 +9,8 @@ const postQuestion = require('./scratch/post_test');
 const fs = require('fs');
 
 async function main(){
-  const session = await getSession();
+  // const session = await getSession();
+  const session = {"id":"effebced-7d21-4a3f-a208-907af28a9240"};
   const metabaseQuestions = [];
   const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: 5});
   const questionObject = {
@@ -25,8 +26,8 @@ async function main(){
 
   const filteredMetabaseQuestions = removeDeprecatedCards(metabaseQuestions, metadata, savedQuestionMetadata);
 
-  for (let i = 0; i < 1; i++) {
-    const badQuestions = [1,18,27,33,49,50,53,64,69,70,84,95]
+  for (let i = 0; i < filteredMetabaseQuestions.length; i++) {
+    const badQuestions = [1,18,22,27,33,49,50,53,54,64,69,70,85,96]
     if (!badQuestions.includes(i)) {
       console.log(i);
       console.log(filteredMetabaseQuestions[i].id);
