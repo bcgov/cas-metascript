@@ -58,18 +58,21 @@ if (select !== '*') {
           if (field.expr.table === from[i].table || field.expr.table === from[i].as)
             joinTable = from[i];
         }
-        const tableName = joinTable.table;
+        const tableName = {
+          table: joinTable.table,
+          alias: joinTable.as
+        }
         /* Find the foreign key in the join clause (if the foreign table is on the right side of the clause,
            then the foreign key in the source table is on the left side of the clause) */
-        if (joinTable.on.right.table === tableName) {
-          mbql_query.fields.push(['fk->', `${joinTable.on.left.column}`, `${tableName}.${field.expr.column}`]);
+        if (joinTable.on.right.table === tableName.table || joinTable.on.right.table === tableName.alias) {
+          mbql_query.fields.push(['fk->', `${joinTable.on.left.column}`, `${tableName.table}.${field.expr.column}`]);
           mbql_query.columns.push([`${joinTable.on.left.column}`]);
         }
         else {
-          mbql_query.fields.push(['fk->', `${joinTable.on.right.column}`, `${tableName}.${field.expr.column}`]);
+          mbql_query.fields.push(['fk->', `${joinTable.on.right.column}`, `${tableName.table}.${field.expr.column}`]);
           mbql_query.columns.push([`${joinTable.on.right.column}`]);
         }
-        mbql_query.foreign_columns.push([tableName, field.expr.column]) 
+        mbql_query.foreign_columns.push([tableName.table, field.expr.column]);
       }
       else {
         mbql_query.fields.push(field.expr.column)
@@ -86,18 +89,21 @@ if (select !== '*') {
           if (field.expr.args.expr.table === from[i].table || field.expr.args.expr.table === from[i].as)
             joinTable = from[i];
         }
-        const tableName = joinTable.table;
+        const tableName = {
+          table: joinTable.table,
+          alias: joinTable.as
+        }
         /* Find the foreign key in the join clause (if the foreign table is on the right side of the clause,
            then the foreign key in the source table is on the left side of the clause) */
-        if (joinTable.on.right.table === tableName) {
-          mbql_query.aggregation.push(['fk->', `${joinTable.on.left.column}`, `${tableName}.${field.expr.args.expr.column}`]);
+        if (joinTable.on.right.table === tableName.table || joinTable.on.right.table === tableName.alias) {
+          mbql_query.aggregation.push(['fk->', `${joinTable.on.left.column}`, `${tableName.table}.${field.expr.args.expr.column}`]);
           mbql_query.columns.push([`${joinTable.on.left.column}`]);
         }
         else {
-          mbql_query.aggregation.push(['fk->', `${joinTable.on.right.column}`, `${tableName}.${field.expr.args.expr.column}`]);
+          mbql_query.aggregation.push(['fk->', `${joinTable.on.right.column}`, `${tableName.table}.${field.expr.args.expr.column}`]);
           mbql_query.columns.push([`${joinTable.on.right.column}`]);
         }
-        mbql_query.foreign_columns.push([tableName, field.expr.args.expr.column]) 
+        mbql_query.foreign_columns.push([tableName.table, field.expr.args.expr.column]);
       }
       // If the table in the expression is the same as the source table
       else {
@@ -151,18 +157,21 @@ const traverseObject = (obj, array, from) => {
           if (obj.table === from[i].table || obj.table === from[i].as)
             joinTable = from[i]
         }
-        const tableName = joinTable.table;
+        const tableName = {
+          table: joinTable.table,
+          alias: joinTable.as
+        }
         /* Find the foreign key in the join clause (if the foreign table is on the right side of the clause,
            then the foreign key in the source table is on the left side of the clause) */
-        if (joinTable.on.right.table === tableName) {
-          array.push(['fk->', `${joinTable.on.left.column}`, `${tableName}.${obj.column}`]);
+        if (joinTable.on.right.table === tableName.table || joinTable.on.right.table === tableName.alias) {
+          array.push(['fk->', `${joinTable.on.left.column}`, `${tableName.table}.${obj.column}`]);
           mbql_query.columns.push([`${joinTable.on.left.column}`]);
         }
         else {
-          array.push(['fk->', `${joinTable.on.right.column}`, `${tableName}.${obj.column}`]);
+          array.push(['fk->', `${joinTable.on.right.column}`, `${tableName.table}.${obj.column}`]);
           mbql_query.columns.push([`${joinTable.on.right.column}`]);
         }
-        mbql_query.foreign_columns.push([tableName, obj.column])
+        mbql_query.foreign_columns.push([tableName.table, obj.column])
       }
       else {  
         array.push(obj.column);   
@@ -199,18 +208,21 @@ if (groupBy) {
           if (groupField.table === from[i].table || groupField.table === from[i].as)
             joinTable = from[i];
         }
-        const tableName = joinTable.table;
+        const tableName = {
+          table: joinTable.table,
+          alias: joinTable.as
+        }
         /* Find the foreign key in the join clause (if the foreign table is on the right side of the clause,
            then the foreign key in the source table is on the left side of the clause) */
-        if (joinTable.on.right.table === tableName) {
-          mbql_query.breakout.push(['fk->', `${joinTable.on.left.column}`, `${tableName}.${groupField.column}`]);
+        if (joinTable.on.right.table === tableName.table || joinTable.on.right.table === tableName.alias) {
+          mbql_query.breakout.push(['fk->', `${joinTable.on.left.column}`, `${tableName.table}.${groupField.column}`]);
           mbql_query.columns.push([`${joinTable.on.left.column}`]);
         }
         else {
-          mbql_query.breakout.push(['fk->', `${joinTable.on.right.column}`, `${tableName}.${groupField.column}`]);
+          mbql_query.breakout.push(['fk->', `${joinTable.on.right.column}`, `${tableName.table}.${groupField.column}`]);
           mbql_query.columns.push([`${joinTable.on.right.column}`]);
         }
-        mbql_query.foreign_columns.push([`${tableName}`, groupField.column])
+        mbql_query.foreign_columns.push([`${tableName.table}`, groupField.column])
       }
       else {
         mbql_query.breakout.push(groupField.column)
@@ -224,24 +236,28 @@ if (orderBy) {
   orderBy.forEach(orderedField => {
     if (orderedField.expr.type === 'column_ref') {
       if (orderedField.expr.table !== mbql_query.source_table[0]) {
+        let joinTable;
         for (let i = 1; i < from.length; i++) {
           // Find the correct foreign table reference in the join clause
           if (orderedField.expr.table === from[i].table || orderedField.expr.table === from[i].as)
             joinTable = from[i];
         }
-        const tableName = joinTable.table;
+        const tableName = {
+          table: joinTable.table,
+          alias: joinTable.as
+        }
 
         /* Find the foreign key in the join clause (if the foreign table is on the right side of the clause,
            then the foreign key in the source table is on the left side of the clause) */
-        if (joinTable.on.right.table === tableName) {
-          mbql_query['order-by'].push(['fk->', `${joinTable.on.left.column}`, `${tableName}.${orderedField.expr.column}`]);
+        if (joinTable.on.right.table === tableName.table || joinTable.on.right.table === tableName.alias) {
+          mbql_query['order-by'].push(['fk->', `${joinTable.on.left.column}`, `${tableName.table}.${orderedField.expr.column}`]);
           mbql_query.columns.push([`${joinTable.on.left.column}`]);
         }
         else {
-          mbql_query['order-by'].push(['fk->', `${joinTable.on.right.column}`, `${tableName}.${orderedField.expr.column}`]);
+          mbql_query['order-by'].push([orderedField.type, ['fk->', `${joinTable.on.right.column}`, `${tableName.table}.${orderedField.expr.column}`]]);
           mbql_query.columns.push([`${joinTable.on.right.column}`]);
         }
-        mbql_query.foreign_columns.push([`${tableName}`, orderedField.expr.column])
+        mbql_query.foreign_columns.push([`${tableName.table}`, orderedField.expr.column])
       }
       else {
         mbql_query['order-by'].push([orderedField.type, orderedField.expr.column])
