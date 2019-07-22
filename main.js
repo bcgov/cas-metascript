@@ -25,7 +25,7 @@ async function main(){
   const filteredMetabaseQuestions = removeDeprecatedCards(metabaseQuestions, metadata, savedQuestionMetadata);
   
   
-  for (let i = 0; i < filteredMetabaseQuestions.length - 1; i++) {
+  for (let i = 0; i < 1; i++) {
     const badQuestions = [1,18,27,33,49,50,53,64,69,70,84,95]
     if (!badQuestions.includes(i)) {
       // console.log(i);
@@ -38,8 +38,10 @@ async function main(){
 
         questionObject.questions.push(question);
         console.log(`Question ${i} / ${filteredMetabaseQuestions.length - 1} finished`);
+
+        question = await convert(question);
+        console.log(util.inspect(question, false, null, true));
         /*
-          question = await convert(question);
           question = await removeDimensionFields(question);
 
           question.send = {
