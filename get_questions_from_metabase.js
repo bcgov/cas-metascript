@@ -26,7 +26,7 @@ async function main(){
 
   const filteredMetabaseQuestions = removeDeprecatedCards(metabaseQuestions, metadata, savedQuestionMetadata);
 
-  for (let i = 80; i < filteredMetabaseQuestions.length; i++) {
+  for (let i = 0; i < filteredMetabaseQuestions.length; i++) {
     const badQuestions = [22,71,87,29,30,70,95,96,104,63,83,76,78,62,79,69,84,86,81,25,37]
     // 37 is a nested with statement that the current transformations don't account for
     if (!badQuestions.includes(filteredMetabaseQuestions[i].id)) {
