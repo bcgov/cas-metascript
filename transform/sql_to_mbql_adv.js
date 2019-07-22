@@ -34,7 +34,7 @@ order by facility.facility_name;
 // const ast = parser.astify(testSQL);
 const ast = parser.astify(question.sql);
 
-console.log(util.inspect(ast, false, null, true /* enable colors */));
+// console.log(util.inspect(ast, false, null, true /* enable colors */));
 // Add the from table name to the source table
 mbql_query.source_table.push(ast[0].from[0].table);
 const from = ast[0].from;

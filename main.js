@@ -25,13 +25,13 @@ async function main(){
   const filteredMetabaseQuestions = removeDeprecatedCards(metabaseQuestions, metadata, savedQuestionMetadata);
   
   
-  for (let i = 0; i < 1; i++) {
+  for (let i = 0; i < filteredMetabaseQuestions.length-1; i++) {
     const badQuestions = [1,18,27,33,49,50,53,64,69,70,84,95]
     if (!badQuestions.includes(i)) {
-      // console.log(i);
-      // console.log(filteredMetabaseQuestions[i].id);
+      console.log(i);
+      console.log(filteredMetabaseQuestions[i].id);
       let question = filteredMetabaseQuestions[i];
-    
+
       try {
         const scrubbedSQL = await getScrubbedSQL(question);
         question.sql = scrubbedSQL;
@@ -40,7 +40,7 @@ async function main(){
         console.log(`Question ${i} / ${filteredMetabaseQuestions.length - 1} finished`);
 
         question = await convert(question);
-        console.log(util.inspect(question, false, null, true));
+
         /*
           question = await removeDimensionFields(question);
 
@@ -64,6 +64,8 @@ async function main(){
       }
       catch(e) { console.log(util.inspect(e, false, null, true /* enable colors */)); }
     }
+    else
+      console.log(`Skipped question ${i} / ${filteredMetabaseQuestions.length}: Broken Question`);
   }
   const unixTimestamp = Date.now();
   fs.writeFile(`./output/metabase_questions_${unixTimestamp}`, JSON.stringify(questionObject), (err) => {
