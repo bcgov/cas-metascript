@@ -4,26 +4,32 @@ const util = require('util');
 
 const scrubMetabaseSQL = (question, sql, schemas) => {
   const quoteRegex = /"/g;
-  let schemaString = '';
+  let schemaStringWithDot = '';
+  let schemaStringNoDot = '';
   schemas.forEach((schema, key, schemas) => {
-    if (Object.is(schemas.length - 1, key))
-      schemaString += `${schema}\.`;
-    else
-      schemaString += `${schema}\.|`;
+    if (Object.is(schemas.length - 1, key)) {
+      schemaStringWithDot += `${schema}\\\.`;
+      schemaStringNoDot += `${schema}`;
+    }
+    else {
+      schemaStringWithDot += `${schema}\\\.|`;
+      schemaStringNoDot += `${schema}|`
+    }
   })
   let schema;
-  const schemaRegex = new RegExp(schemaString, 'gi');
-  const regexArray = [quoteRegex, schemaRegex];
+  const schemaDotRegex = new RegExp(schemaStringWithDot, 'gi');
+  const schemaNoDotRegex = new RegExp(schemaStringNoDot, 'gi');
+  const regexArray = [quoteRegex, schemaDotRegex];
   let scrubbedSQL = sql;
-  if (schemaRegex.test(scrubbedSQL)) {
-    schema = scrubbedSQL.match(schemaRegex);
+
+  if (schemaNoDotRegex.test(scrubbedSQL)) {
+    schema = scrubbedSQL.match(schemaNoDotRegex);
   }
   question.schema = schema[0].replace(quoteRegex, '');
-  console.log(question.schema);
-
   regexArray.forEach(regex => {
     scrubbedSQL = scrubbedSQL.replace(regex, '');
   });
+
 
   if (!question.dataset_query.query.fields && !question.dataset_query.query.aggregation) {
     const replaceStar = /(?<=SELECT)[\w\W]*(?=FROM)/g;

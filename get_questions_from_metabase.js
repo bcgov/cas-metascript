@@ -34,8 +34,8 @@ async function main(){
 
   const filteredMetabaseQuestions = removeDeprecatedCards(metabaseQuestions, metadata, savedQuestionMetadata);
 
-  for (let i = 0; i < 20; i++) {
-    const badQuestions = [22,71,87,29,30,70,95,96,63,83,76,78,84,86,25,37]
+  for (let i = 0; i < filteredMetabaseQuestions.length; i++) {
+    const badQuestions = [22,71,87,29,30,70,95,96,63,66,83,85,76,78,84,86,25,37]
     // 37 is a nested with statement that the current transformations don't account for
     if (!badQuestions.includes(filteredMetabaseQuestions[i].id)) {
       console.log(i);
@@ -54,7 +54,7 @@ async function main(){
       catch(e) { console.log(util.inspect(e, false, null, true /* enable colors */)); }
     }
     else
-      console.log(`Skipped question ${i} / ID: ${filteredMetabaseQuestions.id}: Broken Question`);
+      console.log(`Skipped question ${i} / ID: ${filteredMetabaseQuestions[i].id}: Broken Question`);
   }
   const unixTimestamp = Date.now();
   fs.writeFile(`./output/metabase_questions_${unixTimestamp}.json`, JSON.stringify(questionObject), (err) => {
