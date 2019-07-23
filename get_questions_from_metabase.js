@@ -18,7 +18,15 @@ async function main(){
   }
 
   allDatabaseCards.forEach(card => {
-    metabaseQuestions.push({card, id: card.id, database_id: card.database_id, name: card.name, dataset_query: card.dataset_query, sql: ''})
+    metabaseQuestions.push({
+      card,
+      id: card.id,
+      database_id:
+      card.database_id,
+      name: card.name,
+      dataset_query: card.dataset_query,
+      segment: false,
+      sql: ''})
   });
 
   const metadata = await callAPI(session, `/database/5/metadata`, 'GET')
@@ -27,13 +35,14 @@ async function main(){
   const filteredMetabaseQuestions = removeDeprecatedCards(metabaseQuestions, metadata, savedQuestionMetadata);
 
   for (let i = 0; i < filteredMetabaseQuestions.length; i++) {
-    const badQuestions = [22,71,87,29,30,70,95,96,104,63,83,76,78,62,79,69,84,86,81,25,37]
+    const badQuestions = [22,71,87,29,30,70,95,96,63,83,76,78,84,86,25,37]
     // 37 is a nested with statement that the current transformations don't account for
     if (!badQuestions.includes(filteredMetabaseQuestions[i].id)) {
       console.log(i);
       console.log(filteredMetabaseQuestions[i].id);
       let question = filteredMetabaseQuestions[i];
-
+      if (filteredMetabaseQuestions[i].dataset_query.query.filter[0] === 'segment')
+        filteredMetabaseQuestions[i].segment = true;
       try {
         const scrubbedSQL = await getScrubbedSQL(question, session);
         question.sql = scrubbedSQL;

@@ -38,17 +38,34 @@ async function save_question_to_metabase() {
           query: {}
         }
       };
-      // console.log(util.inspect(question.sql, false, null, true));
       question.send.dataset_query.query["source-table"] = question.mbql.source_table[1];
-      question.send.dataset_query.query.fields = question.mbql.fields;
       question.send.dataset_query.query.aggregation = question.mbql.aggregation;
-      question.send.dataset_query.query.filter = question.mbql.filter;
+      if (question.segment === true) {
+        /* This section could be used to POST a new segment with an updated filter to metabase
+           or update an existing segment.
+           TODO: Choose a course of action when dealing with segments. For now, I am simply putting the segment back in the question filter without edits
+
+        const metabaseSegment = await callAPI(session, `/segment/${question.dataset_query.query.filter[1]}`, 'GET');
+        const newSegment = {
+          name: metabaseSegment.name,
+          description: metabaseSegment.description,
+          table_id: metabaseSegment.table_id,
+          definition: metabaseSegment.definition
+        }
+        newSegment.definition.filter = question.mbql.filter
+        */
+       question.send.dataset_query.query.filter = question.dataset_query.query.filter;
+      }
+      else {
+        question.send.dataset_query.query.fields = question.mbql.fields;
+        question.send.dataset_query.query.filter = question.mbql.filter;
+      }
       question.send.dataset_query.query.breakout = question.mbql.breakout;
       question.send.dataset_query.query['order-by'] = question.mbql['order-by'];
       question.send.dataset_query.type = question.dataset_query.type;
       question.send.dataset_query.database = question.dataset_query.database;
-      console.log(util.inspect(question.send, false, null, true));
-      // await postQuestion('/card/', question, session);
+      // console.log(util.inspect(question, false, null, true));
+      await postQuestion('/card/', question, session);
       console.log(`\nQuestion ${i}, ID ${question.id} saved to metabase`);
     }
     catch(e) { console.log(util.inspect(e, false, null, true)); }
