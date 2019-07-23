@@ -34,14 +34,15 @@ async function main(){
 
   const filteredMetabaseQuestions = removeDeprecatedCards(metabaseQuestions, metadata, savedQuestionMetadata);
 
-  for (let i = 0; i < filteredMetabaseQuestions.length; i++) {
+  for (let i = 0; i < 20; i++) {
     const badQuestions = [22,71,87,29,30,70,95,96,63,83,76,78,84,86,25,37]
     // 37 is a nested with statement that the current transformations don't account for
     if (!badQuestions.includes(filteredMetabaseQuestions[i].id)) {
       console.log(i);
       console.log(filteredMetabaseQuestions[i].id);
       let question = filteredMetabaseQuestions[i];
-      if (filteredMetabaseQuestions[i].dataset_query.query.filter[0] === 'segment')
+
+      if (filteredMetabaseQuestions[i].dataset_query.query.filter && filteredMetabaseQuestions[i].dataset_query.query.filter[0] === 'segment')
         filteredMetabaseQuestions[i].segment = true;
       try {
         const scrubbedSQL = await getScrubbedSQL(question, session);
@@ -49,12 +50,11 @@ async function main(){
 
         questionObject.questions.push(question);
         console.log(`Question ${i} / ${filteredMetabaseQuestions.length - 1} finished`);
-
       }
       catch(e) { console.log(util.inspect(e, false, null, true /* enable colors */)); }
     }
     else
-      console.log(`Skipped question ${i} / ${filteredMetabaseQuestions.length}: Broken Question`);
+      console.log(`Skipped question ${i} / ID: ${filteredMetabaseQuestions.id}: Broken Question`);
   }
   const unixTimestamp = Date.now();
   fs.writeFile(`./output/metabase_questions_${unixTimestamp}.json`, JSON.stringify(questionObject), (err) => {

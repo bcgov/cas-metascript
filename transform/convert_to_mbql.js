@@ -35,7 +35,7 @@ const replaceValues = (filter, columns, foreign_columns) => {
 async function mapSQLValuesToID(question, session) {
   const metadata = await callAPI(session, `/database/${question.database_id}/metadata`, 'GET')
   metadata.tables.forEach(table => {
-    if (table.name === question.mbql.source_table[0]) {
+    if (table.name === question.mbql.source_table[0] && table.schema.toUpperCase() === question.schema.toUpperCase()) {
       question.mbql.source_table.push(table.id)
 
       question.mbql.columns.forEach(column => {
@@ -47,7 +47,7 @@ async function mapSQLValuesToID(question, session) {
       })
     }
     question.mbql.foreign_columns.forEach(foreign_column => {
-      if (table.name === foreign_column[0]) {
+      if (table.name === foreign_column[0] && table.schema.toUpperCase() === question.schema.toUpperCase()) {
         table.fields.forEach(field => {
           if (field.name === foreign_column[1]) {
             foreign_column.push(field.id)

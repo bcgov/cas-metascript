@@ -11,10 +11,16 @@ const scrubMetabaseSQL = (question, sql, schemas) => {
     else
       schemaString += `${schema}\.|`;
   })
+  let schema;
   const schemaRegex = new RegExp(schemaString, 'gi');
   const regexArray = [quoteRegex, schemaRegex];
   let scrubbedSQL = sql;
-  
+  if (schemaRegex.test(scrubbedSQL)) {
+    schema = scrubbedSQL.match(schemaRegex);
+  }
+  question.schema = schema[0].replace(quoteRegex, '');
+  console.log(question.schema);
+
   regexArray.forEach(regex => {
     scrubbedSQL = scrubbedSQL.replace(regex, '');
   });
