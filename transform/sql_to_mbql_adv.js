@@ -135,10 +135,16 @@ const traverse = (obj, array, from) => {
 const traverseObject = (obj, array, from) => {
   // If the current object has a 'left' node then it is an operation, push the operator and traverse the left and right branches
   if (obj.hasOwnProperty('left')) {
-    array.push([])
+    array.push([]);
     array = array[array.length-1]
     if (obj.operator === '<>')
       obj.operator = '!=';
+    else if (obj.operator === 'IS NOT' && obj.right.value === null) {
+      obj.operator = 'not-null';
+    }
+    else if (obj.operator === 'IS' && obj.right.value === null) {
+      obj.operator = 'is-null';
+    }
     array.push(obj.operator);
 
     traverse(obj.left, array, from);
@@ -177,9 +183,7 @@ const traverseObject = (obj, array, from) => {
         mbql_query.columns.push([obj.column]);
       }
     }
-    else if (obj.type === 'null')
-      array.push(null);
-    else
+    else if (obj.value !== null)
       array.push(obj.value);
   }
 }
