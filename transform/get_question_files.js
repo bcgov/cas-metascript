@@ -20,7 +20,7 @@ const getQuestionFiles = (questionSet) => {
 
   let data = {questions: []};
 
-  const traverse = function(questionSet, dir, result = []) {
+  const traverse = function(questionSet, dir) {
 
       // list files in directory and loop through
       fs.readdirSync(dir).forEach((file) => {
@@ -28,33 +28,22 @@ const getQuestionFiles = (questionSet) => {
           // builds full path of file
           const fPath = path.resolve(dir, file);
 
-          // prepare stats obj
-          const fileStats = { file, path: fPath };
-
-          // is the file a directory ? 
-          // if yes, traverse it also, if no just add it to the result
+          // file is a directory
           if (fs.statSync(fPath).isDirectory()) {
-              fileStats.type = 'dir';
-              fileStats.files = [];
-              result.push(fileStats);
-              return traverse(questionSet, fPath, fileStats.files)
+              return traverse(questionSet, fPath)
           }
+          // file is not a directory
           if (questionSet.length > 0) {
             const match = file.match(regex);
-            if (questionSet.includes(match[0])) {
+            if (questionSet.includes(match[0]))
               data.questions.push(JSON.parse(fs.readFileSync(fPath)))
-            }
-            else if (questionSet[0] === 'all') {
+            else if (questionSet[0] === 'all')
               data.questions.push(JSON.parse(fs.readFileSync(fPath)))
-            }
-            fileStats.type = 'file';
-            result.push(fileStats);
           }
           else {
             throw `Missing Argument:   A space separated list of question ids to be posted to metabase or 'all' to post all questions in directory`
           }
       });
-      return result;
   };
   traverse(questionSet,`./metabase_questions/${latestFolder.name}`)
 
