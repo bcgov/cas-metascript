@@ -167,7 +167,6 @@ const sql_to_mbql = (question) => {
   if (where) {
     // Call traverse function on astifieid 'where' object and push data to filter in mbql_query object
     traverse(where, mbql_query.filter, from);
-
     // The function finishes with one too many outer arrays housing all the inner arrays. So pop goes the weasel
     mbql_query.filter = mbql_query.filter.pop();
   }

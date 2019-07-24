@@ -30,7 +30,6 @@ const scrubMetabaseSQL = (question, sql, schemas) => {
     scrubbedSQL = scrubbedSQL.replace(regex, '');
   });
 
-
   if (!question.dataset_query.query.fields && !question.dataset_query.query.aggregation) {
     const replaceStar = /(?<=SELECT)[\w\W]*(?=FROM)/g;
     scrubbedSQL = scrubbedSQL.replace(replaceStar, ' * ');
