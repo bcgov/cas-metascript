@@ -53,7 +53,7 @@ async function main(){
         questionObject.questions.push(question);
         console.log(`Question ${i} / ${filteredMetabaseQuestions.length - 1} finished`);
         if (question.collection_id === null) question.collection_id = 'root';
-        fs.writeFile(`./metabase_questions/${collections.unixTimestamp}/${collections[question.collection_id].location}/${question.id}.json`, JSON.stringify(questionObject), (err) => {
+        fs.writeFile(`./metabase_questions/${collections.unixTimestamp}/${collections[question.collection_id].location}/${question.id}.json`, JSON.stringify(question), (err) => {
             if (err) throw err;
             console.log('Output File Written');
           });
