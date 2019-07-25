@@ -36,7 +36,7 @@ async function save_question_to_metabase(questionSet) {
         }
       };
       console.log(`INDEX: ${i} ID: ${question.id}`);
-      // ** TODO: Native queries are not posting back to metabase. Find out why.
+      // *** TODO: Native queries are not posting back to metabase. Find out why.
       if (question.dataset_query.type === 'native') {
         question.send.dataset_query = {native: {query: question.sql}, type: 'native'};
       }
