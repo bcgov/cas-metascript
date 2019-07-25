@@ -11,23 +11,8 @@ async function save_question_to_metabase(questionSet) {
   try {
     // const session = await getSession();
     const session = {"id":"effebced-7d21-4a3f-a208-907af28a9240"};
-    const files = fs.readdirSync('./output');
-    // Deprecated?
-    const latestFile = {
-      file: '',
-      fileNumber: '0'
-    }
-    files.forEach(file => {
-      const regex = /\d+/
-      const fileNumber = file.match(regex);
-      if (fileNumber[0] > latestFile.fileNumber) {
-        latestFile.file = file;
-        latestFile.fileNumber = fileNumber[0];
-      }
-    })
 
     let data = getQuestionFiles(questionSet);
-    // let data = JSON.parse(fs.readFileSync(`./output/${latestFile.file}`));
 
     for (let i = 0; i < data.questions.length; i++) {
       let question = data.questions[i];
