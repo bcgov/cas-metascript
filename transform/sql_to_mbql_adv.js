@@ -24,10 +24,10 @@ const sql_to_mbql = (question) => {
   // const ast = parser.astify(testSQL);
   const ast = parser.astify(question.sql);
 
-  // console.log(util.inspect(ast, false, null, true /* enable colors */));
+  // console.log(util.inspect(ast.from, false, null, true /* enable colors */));
   // Add the from table name to the source table
-  mbql_query.source_table.push(ast[0].from[0].table);
-  const from = ast[0].from;
+  mbql_query.source_table.push(ast.from[0].table);
+  const from = ast.from;
 
   const parseForeignTable = (mbqlClause, from, tablePath) => {
     let joinTable = {};
@@ -58,13 +58,12 @@ const sql_to_mbql = (question) => {
    *************************************/
 
   // The selected fields in Select....From
-  const select = ast[0].columns;
+  const select = ast.columns;
 
   if (select !== '*') {
     select.forEach(field => {
       // If the field in the select statement is a column reference and the dataset_query contains fields
       if (field.expr.type === 'column_ref' && question.dataset_query.query.fields) {
-        // let joinTable = {};
         // If the table in the expression is a foreign table reference
         if (field.expr.table !== mbql_query.source_table[0]) {
           parseForeignTable('fields', from, field.expr);
@@ -95,7 +94,7 @@ const sql_to_mbql = (question) => {
    *************************************/
 
   // The where clause from the astified sql tree
-  const where = ast[0].where;
+  const where = ast.where;
 
   /** Calling function for the recursive traverseObject function
    *  @param obj - The object to iterate on
@@ -175,8 +174,8 @@ const sql_to_mbql = (question) => {
    *    GROUPBY / ORDERBY CLAUSE       *
    *************************************/
 
-  const groupBy = ast[0].groupby;
-  const orderBy = ast[0].orderby;
+  const groupBy = ast.groupby;
+  const orderBy = ast.orderby;
   if (groupBy) {
     groupBy.forEach(groupField => {
       if (groupField.type === 'column_ref') {

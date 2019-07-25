@@ -12,6 +12,7 @@ async function save_question_to_metabase(questionSet) {
     // const session = await getSession();
     const session = {"id":"effebced-7d21-4a3f-a208-907af28a9240"};
     const files = fs.readdirSync('./output');
+    // Deprecated?
     const latestFile = {
       file: '',
       fileNumber: '0'
@@ -43,7 +44,7 @@ async function save_question_to_metabase(questionSet) {
       // If the original question this question is based off of changes, this question could be broken
       else if (typeof question.dataset_query.query["source-table"] === 'string' && question.dataset_query.query["source-table"].match(/card.*/))
         question.send.dataset_query = question.dataset_query;
-      else {  
+      else {
         question = await convert(question, session);
         question = await removeDimensionFields(question, session);
 
@@ -63,7 +64,7 @@ async function save_question_to_metabase(questionSet) {
           }
           newSegment.definition.filter = question.mbql.filter
           */
-        question.send.dataset_query.query.filter = question.dataset_query.query.filter;
+          question.send.dataset_query.query.filter = question.dataset_query.query.filter;
         }
         else {
           question.send.dataset_query.query.fields = question.mbql.fields;

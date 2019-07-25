@@ -1,6 +1,7 @@
 const callAPI = require('../api_calls/call_api');
 
 
+// show some input and expected outputs for this function in the comments.
 /**
  * @function removeDimensionFields:
  *    This function removes the fk relation from the fields to be used in the mbql query
