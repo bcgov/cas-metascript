@@ -1,13 +1,25 @@
 const callAPI = require('../api_calls/call_api');
 
-
-// show some input and expected outputs for this function in the comments.
 /**
  * @function removeDimensionFields:
  *    This function removes the fk relation from the fields to be used in the mbql query
  *    if the fk relation is only being used to serve as a basis for a dimension (renamed field) in metabase
  * @param {object} question The question object with a parsed mbql query included
  * @param {object} session The session object containing the session ID used in api calls
+ *
+ * field-id 1234 has a dimension: {id: 1234, human_readable_id: 5678}
+ * -- Sample input:
+ * dataset_query.query.fields = [
+ *  [fk->, [field-id, 1234], [field-id, 5678]] (5678 is in 1234's dimension)
+ *  [field-id, 5432]
+ *  [field-id, 1234] <-- this id is the same as the fk in the first field
+ * ]
+ *
+ * -- Sample output: :
+ * dataset_query.query.fields = [
+ *  [field-id, 5432]
+ *  [field-id, 1234]
+ * ]
  */
 async function removeDimensionFields(question, session) {
 

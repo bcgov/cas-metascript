@@ -3,9 +3,8 @@ const callAPI = require('./api_calls/call_api');
 const getSession = require('./api_calls/get_session');
 const convert = require('./transform/convert_to_mbql');
 const removeDimensionFields = require('./transform/remove_dimension_fields');
-const postQuestion = require('./scratch/post_test');
+const postQuestion = require('./api_calls/post_question');
 const getQuestionFiles = require('./transform/get_question_files');
-const fs = require('fs');
 
 async function save_question_to_metabase(questionSet) {
   try {

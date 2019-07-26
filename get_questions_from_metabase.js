@@ -26,7 +26,7 @@ async function main(){
       sql: ''})
   });
 
-  for (let i = 0; i < 2; i++) {
+  for (let i = 0; i < metabaseQuestions.length; i++) {
     console.log(i);
     console.log(metabaseQuestions[i].id);
     let question = metabaseQuestions[i];
@@ -46,11 +46,12 @@ async function main(){
       if (question.collection_id === null) { question.collection_id = 'root'; };
 
       if (question.broken === false) {
-        // TODO: await this util.promisify for fs
-        fs.writeFile(`./metabase_questions/${collections.unixTimestamp}/${collections[question.collection_id].location}/${question.id}.json`, JSON.stringify(question), (err) => {
-            if (err) throw err;
-            console.log(`Question ${i} / ${metabaseQuestions.length - 1} finished`);
-          });
+        const writeFile = util.promisify(fs.writeFile);
+        try {
+          await writeFile(`./metabase_questions/${collections.unixTimestamp}/${collections[question.collection_id].location}/${question.id}.json`, JSON.stringify(question));
+          console.log(`Question ${i} / ${metabaseQuestions.length - 1} finished`);
+        }
+        catch(e) { console.log(e); }
       }
       else {
         brokenQuestions.push(`Index: ${i}, Question ID: ${question.id}`);
