@@ -3,30 +3,15 @@ const callAPI = require('./api_calls/call_api');
 const getSession = require('./api_calls/get_session');
 const convert = require('./transform/convert_to_mbql');
 const removeDimensionFields = require('./transform/remove_dimension_fields');
-const postQuestion = require('./scratch/post_test');
+const postQuestion = require('./api_calls/post_question');
 const getQuestionFiles = require('./transform/get_question_files');
-const fs = require('fs');
 
 async function save_question_to_metabase(questionSet) {
   try {
     // const session = await getSession();
     const session = {"id":"effebced-7d21-4a3f-a208-907af28a9240"};
-    const files = fs.readdirSync('./output');
-    const latestFile = {
-      file: '',
-      fileNumber: '0'
-    }
-    files.forEach(file => {
-      const regex = /\d+/
-      const fileNumber = file.match(regex);
-      if (fileNumber[0] > latestFile.fileNumber) {
-        latestFile.file = file;
-        latestFile.fileNumber = fileNumber[0];
-      }
-    })
 
     let data = getQuestionFiles(questionSet);
-    // let data = JSON.parse(fs.readFileSync(`./output/${latestFile.file}`));
 
     for (let i = 0; i < data.questions.length; i++) {
       let question = data.questions[i];
@@ -36,14 +21,14 @@ async function save_question_to_metabase(questionSet) {
         }
       };
       console.log(`INDEX: ${i} ID: ${question.id}`);
-      // ** TODO: Native queries are not posting back to metabase. Find out why.
+      // *** TODO: Native queries are not posting back to metabase. Find out why.
       if (question.dataset_query.type === 'native') {
         question.send.dataset_query = {native: {query: question.sql}, type: 'native'};
       }
       // If the original question this question is based off of changes, this question could be broken
       else if (typeof question.dataset_query.query["source-table"] === 'string' && question.dataset_query.query["source-table"].match(/card.*/))
         question.send.dataset_query = question.dataset_query;
-      else {  
+      else {
         question = await convert(question, session);
         question = await removeDimensionFields(question, session);
 
@@ -63,7 +48,7 @@ async function save_question_to_metabase(questionSet) {
           }
           newSegment.definition.filter = question.mbql.filter
           */
-        question.send.dataset_query.query.filter = question.dataset_query.query.filter;
+          question.send.dataset_query.query.filter = question.dataset_query.query.filter;
         }
         else {
           question.send.dataset_query.query.fields = question.mbql.fields;

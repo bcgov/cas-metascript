@@ -3,29 +3,29 @@ const sqlToMbql = require('./sql_to_mbql_adv');
 const callAPI = require('../api_calls/call_api');
 
 /**
- * Function replaceValues() recursively traverses the nested array filter object and replaces the named tables with the metabase ID's
- * @param {ARRAY[]} filter 
+ * Function replaceValues() recursively traverses the nested array mbqlClause object and replaces the named tables with the metabase ID's
+ * @param {ARRAY[]} mbqlClause
  * @param {ARRAY[]} columns 
  */
-const replaceValues = (filter, columns, foreign_columns) => {
-  for (let i = 0; i < filter.length; i++) {
-    if (Array.isArray(filter[i])) {
-      replaceValues(filter[i], columns, foreign_columns);
+const replaceValues = (mbqlClause, columns, foreign_columns) => {
+  for (let i = 0; i < mbqlClause.length; i++) {
+    if (Array.isArray(mbqlClause[i])) {
+      replaceValues(mbqlClause[i], columns, foreign_columns);
     }
     else {
       columns.forEach(column => {
-        if (filter[i] === column[0]) {
-          filter[i] = ['field-id', column[1]];
+        if (mbqlClause[i] === column[0]) {
+          mbqlClause[i] = ['field-id', column[1]];
         }
       })
       foreign_columns.forEach(column => {
-        if (filter[i] === `${column[0]}.${column[1]}`) {
-          filter[i] = ['field-id', column[2]];
+        if (mbqlClause[i] === `${column[0]}.${column[1]}`) {
+          mbqlClause[i] = ['field-id', column[2]];
         }
       })
     }
   }
-  return filter;
+  return mbqlClause;
 }
 
 /**
