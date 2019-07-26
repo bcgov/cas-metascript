@@ -6,6 +6,8 @@ const removeDimensionFields = require('./transform/remove_dimension_fields');
 const postQuestion = require('./api_calls/post_question');
 const getQuestionFiles = require('./transform/get_question_files');
 
+
+//Note: metabase questions of type date 'previous n days' not currently supported
 async function save_question_to_metabase(questionSet) {
   try {
     // const session = await getSession();
