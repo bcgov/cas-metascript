@@ -2,7 +2,7 @@ const util = require('util');
 const callAPI = require('./api_calls/call_api');
 const getSession = require('./api_calls/get_session');
 const getScrubbedSQL = require('./transform/get_scrubbed_sql');
-const createFileStructure = require('./scratch/create_file_structure');
+const createFileStructure = require('./transform/create_file_structure');
 const fs = require('fs');
 
 async function main(){
