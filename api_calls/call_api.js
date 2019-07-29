@@ -18,8 +18,8 @@ async function callAPI(session, apiEndpoint, method, body, params) {
     method,
     params
   };
-  if (method = 'POST') {
-    param.body = body;
+  if (method === 'POST') {
+    param.body = JSON.stringify(body);
   }
   const res = await fetch(url, param)
   const data = await res.json();

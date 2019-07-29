@@ -10,11 +10,11 @@ async function postDashboard(apiEndpoint, dashboard, session) {
 
   const originalDash = dashboard;
 
-  const card ={
-    name: `dev_id_${dashboard.id}`,
-    description: originalCard.description,
+  const newDashboard ={
+    name: `dev_id_dashboard_${dashboard.id}`,
+    description: originalDash.description,
+    parameters: originalDash.parameters,
     collection_id: 25,
-    collection_position: originalCard.collection_position,
   }
   
   const url = `https://metabase-wksv3k-dev.pathfinder.gov.bc.ca/api${apiEndpoint}`;
@@ -24,13 +24,12 @@ async function postDashboard(apiEndpoint, dashboard, session) {
       "content-type":"application/json",
       "X-Metabase-Session": session.id
     },
-    body: JSON.stringify(card),
+    body: JSON.stringify(newDashboard),
     method:'POST'
   };
   const res = await fetch(url, param);
-  console.log(res.status);
-  return res;
+  console.log(`Response status: ${res.status}`);
+  return newDashboard.name;
 };
 
-module.exports = postQuestion;
-s
+module.exports = postDashboard;

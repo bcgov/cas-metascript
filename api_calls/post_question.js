@@ -18,7 +18,7 @@ async function postQuestion(apiEndpoint, question, session) {
     collection_position: originalCard.collection_position,
     result_metadata: originalCard.result_metadata,
     collection_id: 25,
-    name: `dev_id_${question.id}`,
+    name: originalCard.name,//`dev_id_${question.id}`,
     dataset_query: data,
     display: originalCard.display
   }
