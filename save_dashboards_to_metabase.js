@@ -30,6 +30,7 @@ async function saveDashboardsToMetabase() {
             row: dbCard.row,
             parameter_mappings: dbCard.parameter_mappings,
             series: dbCard.series,
+            visualization_settings: dbCard.visualization_settings,
             cardId: dbCard.card.name
           });
         }
