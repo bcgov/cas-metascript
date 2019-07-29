@@ -1,15 +1,17 @@
 const util = require('util');
+const getSession = require('./api_calls/get_session');
 const callAPI = require('./api_calls/call_api');
 const postDashboard = require('./api_calls/post_dashboard');
 
 async function saveDashboardsToMetabase() {
   try {
+    // const session = await getSession();
     const session = {"id":"1ac60d20-0838-4db0-acc4-bfc927ac3324"};
 
     const allDashboards = await callAPI(session, '/dashboard', 'GET', null, {database: 5});
     const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: 5});
     const activeDashboardIDs = [11, 18, 20, 25];
-    const activeDashboards = []
+    const activeDashboards = [];
 
     allDashboards.forEach(dashboard => {
       if (activeDashboardIDs.includes(dashboard.id))
@@ -75,7 +77,7 @@ async function saveDashboardsToMetabase() {
         }
         await callAPI(session, `/dashboard/${newDashboardID}/cards`, 'POST', dashboardCards[j])
       }
-      console.log(`dashboard ${dashboard.id} recreation complete`)
+      console.log(`dashboard ${dashboard.id} recreation complete`);
     }
   }
   catch(e) { console.log(e); }
