@@ -56,6 +56,11 @@ async function saveDashboardsToMetabase() {
   });
   
   for (let i = 0; i < dashboardCards.length; i++) {
+    if (dashboardCards[i].parameter_mappings.length > 0) {
+      dashboardCards[i].parameter_mappings.forEach(mapping => {
+        mapping.card_id = dashboardCards[i].cardId;
+      });
+    }
     await callAPI(session, `/dashboard/${newDashboardID}/cards`, 'POST', dashboardCards[i])
     console.log(`${dashboardCards[i].cardId} added to dashboard id: ${newDashboardID}`)
   }
