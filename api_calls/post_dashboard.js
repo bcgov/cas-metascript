@@ -14,7 +14,7 @@ async function postDashboard(apiEndpoint, dashboard, session) {
     name: `dev_id_dashboard_${dashboard.id}`,
     description: originalDash.description,
     parameters: originalDash.parameters,
-    collection_id: 25,
+    collection_id: 43,
   }
   
   const url = `https://metabase-wksv3k-dev.pathfinder.gov.bc.ca/api${apiEndpoint}`;
