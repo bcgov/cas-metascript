@@ -11,7 +11,7 @@ const getQuestionFiles = require('./transform/get_question_files');
 async function save_question_to_metabase(questionSet) {
   try {
     // const session = await getSession();
-    const session = {"id":"effebced-7d21-4a3f-a208-907af28a9240"};
+    const session = {"id":"1ac60d20-0838-4db0-acc4-bfc927ac3324"};
 
     let data = getQuestionFiles(questionSet);
 

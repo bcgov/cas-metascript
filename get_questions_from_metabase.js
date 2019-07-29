@@ -5,26 +5,44 @@ const getScrubbedSQL = require('./transform/get_scrubbed_sql');
 const createFileStructure = require('./transform/create_file_structure');
 const fs = require('fs');
 
-async function main(){
+async function main(questionSet){
   // const session = await getSession();
-  const session = {"id":"effebced-7d21-4a3f-a208-907af28a9240"};
+  const session = {"id":"1ac60d20-0838-4db0-acc4-bfc927ac3324"};
   const metabaseQuestions = [];
-  const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: 5});
-  const collections = await createFileStructure();
+  const collections = await createFileStructure(session);
   const brokenQuestions = [];
 
-  allDatabaseCards.forEach(card => {
-    metabaseQuestions.push({
-      card,
-      id: card.id,
-      database_id: card.database_id,
-      collection_id: card.collection_id,
-      name: card.name,
-      dataset_query: card.dataset_query,
-      segment: false,
-      broken: false,
-      sql: ''})
-  });
+  if (questionSet.length === 0) {
+    const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: 5});
+    allDatabaseCards.forEach(card => {
+      metabaseQuestions.push({
+        card,
+        id: card.id,
+        database_id: card.database_id,
+        collection_id: card.collection_id,
+        name: card.name,
+        dataset_query: card.dataset_query,
+        segment: false,
+        broken: false,
+        sql: ''})
+    });
+  }
+  else {
+    for (let i = 0; i < questionSet.length; i++) {
+      const card = await callAPI(session, `/card/${questionSet[i]}`, 'GET', null, {database: 5});
+      metabaseQuestions.push({
+        card,
+        id: card.id,
+        database_id: card.database_id,
+        collection_id: card.collection_id,
+        name: card.name,
+        dataset_query: card.dataset_query,
+        segment: false,
+        broken: false,
+        sql: ''
+      });
+    }
+  }
 
   for (let i = 0; i < metabaseQuestions.length; i++) {
     console.log(i);
@@ -63,4 +81,4 @@ async function main(){
   console.log(`Broken Metabase Questions: ${brokenQuestions}`);
 }
 
-main();
+main(process.argv.slice(2));

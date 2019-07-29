@@ -2,8 +2,7 @@ const util = require('util');
 const callAPI = require('../api_calls/call_api');
 const mkdirp = require('mkdirp');
 
-async function createFileStructure() {
-  const session = {"id":"effebced-7d21-4a3f-a208-907af28a9240"};
+async function createFileStructure(session) {
   const unixTimestamp = Date.now();
   const collections = {};
   const collectionData = await callAPI(session, '/collection', 'GET', null, {database: 5});
