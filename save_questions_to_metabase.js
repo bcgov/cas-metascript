@@ -35,6 +35,7 @@ async function save_question_to_metabase(questionSet) {
         questionSet = questionSet.slice(0,questionSet.length);
         if (flags.length > 2 || flags.length === 0 || (flags.includes('--save') && flags.includes('--edit')))
           throw console.error(argumentError);
+        if (questionSet.length === 0) break;
       }
     }
     if (!flags.includes('--save') && !flags.includes('--edit'))
