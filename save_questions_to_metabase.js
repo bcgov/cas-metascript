@@ -3,17 +3,44 @@ const callAPI = require('./api_calls/call_api');
 const getSession = require('./api_calls/get_session');
 const convert = require('./transform/convert_to_mbql');
 const removeDimensionFields = require('./transform/remove_dimension_fields');
-const postQuestion = require('./api_calls/post_question');
+const saveQuestion = require('./api_calls/post_question');
 const getQuestionFiles = require('./transform/get_question_files');
 
+const argumentError = `Argument Error:
+
+Syntax: [cmd] [--flag] [--flag/list]
+      
+--save: save new questions/dashboards to metabase (with new id's)
+or
+--edit: edit current questions/dashboards (keep current id's)
+
+Followed by:
+
+--all: save/edit all questions in download folder
+or
+A space-separated list of questions to save/edit`;
 
 //Note: metabase questions of type date 'previous n days' not currently supported
 async function save_question_to_metabase(questionSet) {
   try {
     // const session = await getSession();
     const session = {"id":"1ac60d20-0838-4db0-acc4-bfc927ac3324"};
+    const flags = [];
+    if (questionSet[0] === undefined) {
+      throw console.error(argumentError);
+    }
+    else {
+      while(!parseInt(questionSet[0])) {
+        flags.push(questionSet.shift());
+        questionSet = questionSet.slice(0,questionSet.length);
+        if (flags.length > 2 || flags.length === 0 || (flags.includes('--save') && flags.includes('--edit')))
+          throw console.error(argumentError);
+      }
+    }
+    if (!flags.includes('--save') && !flags.includes('--edit'))
+      throw console.error(argumentError);
 
-    let data = getQuestionFiles(questionSet);
+    let data = getQuestionFiles(questionSet, flags);
 
     for (let i = 0; i < data.questions.length; i++) {
       let question = data.questions[i];
@@ -62,7 +89,10 @@ async function save_question_to_metabase(questionSet) {
         question.send.dataset_query.database = question.dataset_query.database;
       }
       // console.log(util.inspect(question, false, null, true));
-      await postQuestion('/card/', question, session);
+      if (flags.includes('--save'))
+        await saveQuestion('/card/', question, session, 'POST');
+      else if (flags.includes('--edit'))
+        await saveQuestion(`/card/${question.id}`, question, session, 'PUT');
       console.log(`\nQuestion ${i}, ID ${question.id} saved to metabase`);
     };
   }
