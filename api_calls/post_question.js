@@ -6,21 +6,30 @@ const util = require('util');
  * @param {String} apiEndpoint - The metabase API endpoint 
  * @param {object} body - The body of the request
  */
-async function postQuestion(apiEndpoint, question, session) {
+async function postQuestion(apiEndpoint, question, session, method) {
   
   const data = question.send.dataset_query;
 
   const originalCard = question.card;
 
-  const card ={
-    visualization_settings: originalCard.visualization_settings,
-    description: originalCard.description,
-    collection_position: originalCard.collection_position,
-    result_metadata: originalCard.result_metadata,
-    collection_id: 25,
-    name: originalCard.name,//`dev_id_${question.id}`,
-    dataset_query: data,
-    display: originalCard.display
+  let card = {};
+
+  if (method === 'POST') {
+    card = {
+      visualization_settings: originalCard.visualization_settings,
+      description: originalCard.description,
+      collection_position: originalCard.collection_position,
+      result_metadata: originalCard.result_metadata,
+      collection_id: 25,
+      name: originalCard.name,//`dev_id_${question.id}`,
+      dataset_query: data,
+      display: originalCard.display
+    }
+  }
+  else if(method === 'PUT') {
+    card = {
+      dataset_query: data
+    }
   }
   
   const url = `https://metabase-wksv3k-dev.pathfinder.gov.bc.ca/api${apiEndpoint}`;
@@ -31,7 +40,7 @@ async function postQuestion(apiEndpoint, question, session) {
       "X-Metabase-Session": session.id
     },
     body: JSON.stringify(card),
-    method:'POST'
+    method
   };
   const res = await fetch(url, param);
   console.log(res.status);
