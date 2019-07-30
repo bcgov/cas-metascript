@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const util = require('util');
 
-const getQuestionFiles = (questionSet) => {
+const getQuestionFiles = (questionSet, flags) => {
 
   const regex = /\d+/
   const questionFolders = fs.readdirSync('./metabase_questions');
@@ -20,7 +20,7 @@ const getQuestionFiles = (questionSet) => {
 
   let data = {questions: []};
 
-  const traverseFiles = function(questionSet, dir) {
+  const traverseFiles = function(questionSet, dir, allFlag) {
 
       // list files in directory and loop through
       fs.readdirSync(dir).forEach((file) => {
@@ -30,22 +30,21 @@ const getQuestionFiles = (questionSet) => {
 
           // file is a directory
           if (fs.statSync(fPath).isDirectory()) {
-              return traverseFiles(questionSet, fPath)
+              return traverseFiles(questionSet, fPath, allFlag)
           }
           // file is not a directory
-          if (questionSet.length > 0) {
-            const match = file.match(regex);
-            if (questionSet.includes(match[0]))
-              data.questions.push(JSON.parse(fs.readFileSync(fPath)))
-            else if (questionSet[0] === 'all')
-              data.questions.push(JSON.parse(fs.readFileSync(fPath)))
-          }
-          else {
-            throw `Missing Argument: Valid Arguments: 1) A list of space separated IDs (post questions with those IDs to metabase) 2) all (posts all questions in directory to metabase)`
-          }
+          const match = file.match(regex);
+          if (allFlag)
+            data.questions.push(JSON.parse(fs.readFileSync(fPath)))
+          else if (questionSet.includes(match[0]))
+            data.questions.push(JSON.parse(fs.readFileSync(fPath)))
       });
   };
-  traverseFiles(questionSet,`./metabase_questions/${latestFolder.name}`)
+
+  if (flags.includes('--all'))
+    traverseFiles(questionSet,`./metabase_questions/${latestFolder.name}`, true);
+  else
+    traverseFiles(questionSet,`./metabase_questions/${latestFolder.name}`, false);
 
 return data;
 }
