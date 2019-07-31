@@ -15,13 +15,18 @@ async function main(questionSet){
   const collections = await createFileStructure(session);
   const brokenQuestions = [];
 
+  console.log('Getting questions from metabase...')
   if (questionSet.length === 0) {
     const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: database_id});
     allDatabaseCards.forEach(card => {
       metabaseQuestions.push({
         id: card.id,
         database_id: card.database_id,
+        description: card.description,
+        collection_position: card.collection_position,
         collection_id: card.collection_id,
+        display: card.display,
+        visualization_settings: card.visualization_settings,
         name: card.name,
         dataset_query: card.dataset_query,
         segment: false,
@@ -39,6 +44,7 @@ async function main(questionSet){
         collection_position: card.collection_position,
         collection_id: card.collection_id,
         display: card.display,
+        visualization_settings: card.visualization_settings,
         name: card.name,
         dataset_query: card.dataset_query,
         segment: false,
@@ -70,7 +76,7 @@ async function main(questionSet){
         const writeFile = util.promisify(fs.writeFile);
         try {
           await writeFile(`./metabase_questions/${collections.unixTimestamp}/${collections[question.collection_id].location}/${question.id}.json`, JSON.stringify(question));
-          console.log(`Question ${i} / ${metabaseQuestions.length - 1} finished`);
+          console.log(`Question ${i+1} / ${metabaseQuestions.length} finished`);
         }
         catch(e) { console.log(e); }
       }

@@ -10,20 +10,18 @@ async function postQuestion(apiEndpoint, question, session, method) {
   
   const data = question.send.dataset_query;
 
-  const originalCard = question.card;
-
   let card = {};
 
   if (method === 'POST') {
     card = {
-      visualization_settings: originalCard.visualization_settings,
-      description: originalCard.description,
-      collection_position: originalCard.collection_position,
+      visualization_settings: question.visualization_settings,
+      description: question.description,
+      collection_position: question.collection_position,
       // collection_id set for debugging so that new questions are posted to my personal collection
       collection_id: 44,
-      name: originalCard.name,//`dev_id_${question.id}`,
+      name: question.name,//`dev_id_${question.id}`,
       dataset_query: data,
-      display: originalCard.display
+      display: question.display
     }
   }
   else if(method === 'PUT') {
@@ -31,7 +29,7 @@ async function postQuestion(apiEndpoint, question, session, method) {
       dataset_query: data
     }
   }
-  
+
   const url = `${process.env.URL}${apiEndpoint}`;
 
   const param = {
