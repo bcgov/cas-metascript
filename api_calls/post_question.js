@@ -21,7 +21,7 @@ async function postQuestion(apiEndpoint, question, session, method) {
       collection_position: originalCard.collection_position,
       result_metadata: originalCard.result_metadata,
       // collection_id set to 25 for debugging so that new questions are posted to my personal collection
-      collection_id: 25,
+      collection_id: 44,
       name: originalCard.name,//`dev_id_${question.id}`,
       dataset_query: data,
       display: originalCard.display
@@ -33,7 +33,7 @@ async function postQuestion(apiEndpoint, question, session, method) {
     }
   }
   
-  const url = `https://metabase-wksv3k-dev.pathfinder.gov.bc.ca/api${apiEndpoint}`;
+  const url = `${process.env.URL}${apiEndpoint}`;
 
   const param = {
     headers:{

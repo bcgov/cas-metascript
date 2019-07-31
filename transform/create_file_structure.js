@@ -1,13 +1,15 @@
 const util = require('util');
 const callAPI = require('../api_calls/call_api');
 const mkdirp = require('mkdirp');
+require('dotenv').config();
 
 async function createFileStructure(session) {
+  const database_id = process.env.DATABASE_ID;
   const unixTimestamp = Date.now();
   const collections = {};
-  const collectionData = await callAPI(session, '/collection', 'GET', null, {database: 5});
+  const collectionData = await callAPI(session, '/collection', 'GET', null, {database: database_id});
   for (let i = 0; i < collectionData.length; i++){
-    collectionItems = await callAPI(session, `/collection/${collectionData[i].id}/items`, 'GET', null, {database: 5});
+    collectionItems = await callAPI(session, `/collection/${collectionData[i].id}/items`, 'GET', null, {database: database_id});
     if (collectionData[i].id === 'root') {
       collections[collectionData[i].id] = {
         id: collectionData[i].id,

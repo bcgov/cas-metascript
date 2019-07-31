@@ -1,5 +1,6 @@
 const fetch = require("node-fetch");
 const getSession = require("./get_session");
+require('dotenv').config();
 
 /**
  *Function callAPI receives a metabase API endpoint as a parameter then sends a request and returns the data
@@ -8,7 +9,7 @@ const getSession = require("./get_session");
  * @param {object} body - The body of the request
  */
 async function callAPI(session, apiEndpoint, method, body, params) {
-  const url = `https://metabase-wksv3k-dev.pathfinder.gov.bc.ca/api${apiEndpoint}`;
+  const url = `${process.env.URL}${apiEndpoint}`;
 
   const param = {
     headers:{

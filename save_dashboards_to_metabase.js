@@ -2,6 +2,7 @@ const util = require('util');
 const getSession = require('./api_calls/get_session');
 const callAPI = require('./api_calls/call_api');
 const saveDashboard = require('./api_calls/post_dashboard');
+require('dotenv').config();
 
 /** TODO: There is a bug in the metabase api that truncates long api responses (possibly only for api/card/:id/related).
  *  Responses from api/card/:id/related can get large. They are also the way to determine what dashboards a card belongs to.
@@ -14,17 +15,18 @@ async function saveDashboardsToMetabase(flag) {
   try {
     // const session = await getSession();
     const session = {"id":"1ac60d20-0838-4db0-acc4-bfc927ac3324"};
+    const database_id = process.env.DATABASE_ID;
     // Error handling for incorrect flag arguments (--save or --edit)
     if (flag === undefined || (flag !== '--save' && flag !== '--edit')) {
       throw console.error('Invalid or missing argument. Command must include --save(save a dashboard with a new id) or --edit(save an updated dashboard & keep current id)')
     }
 
     // Get all dashboards from metabasebase
-    const allDashboards = await callAPI(session, '/dashboard', 'GET', null, {database: 5});
+    const allDashboards = await callAPI(session, '/dashboard', 'GET', null, {database: database_id});
     // Get all cards from metabase
-    const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: 5});
+    const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: database_id});
     // The ID's of the dashboards to refresh
-    const activeDashboardIDs = [77];//11, 18, 20, 25];
+    const activeDashboardIDs = [79];//11, 18, 20, 25];
     // The dashboard objects to refresh
     const activeDashboards = [];
     const saveEditFlag = flag;
@@ -40,7 +42,7 @@ async function saveDashboardsToMetabase(flag) {
      * and the activeDashboard stuff can be removed.
      */
     for (let i = 0; i < activeDashboards.length; i++) {
-      const dashboard = await callAPI(session, `/dashboard/${activeDashboards[i].id}`, 'GET', null, {database: 5});
+      const dashboard = await callAPI(session, `/dashboard/${activeDashboards[i].id}`, 'GET', null, {database: database_id});
       let dashboardCards = [];
       // Get all cards currently attached to this dashboard
       dashboard.ordered_cards.forEach(dbCard => {
@@ -78,8 +80,8 @@ async function saveDashboardsToMetabase(flag) {
       // Save new dashboard to metabase is --save flag is set
       let newDashboardID = '';
       if (saveEditFlag === '--save') {
-        const newDashboardName = await saveDashboard(`/dashboard/`, dashboard, session);
-        const allDashboards = await callAPI(session, '/dashboard', 'GET', null, {database: 5});
+        const newDashboardName = await saveDashboard(`/dashboard/`, dashboard, 'POST', session);
+        const allDashboards = await callAPI(session, '/dashboard', 'GET', null, {database: database_id});
         // Get the ID of the newly saved dashboard
         allDashboards.forEach(dashboard => {
           if (dashboard.name === newDashboardName)
@@ -100,7 +102,7 @@ async function saveDashboardsToMetabase(flag) {
       }
       // update the array of questions for the dashboard being edited
       if (saveEditFlag === '--edit') {
-        await callAPI(session, `/dashboard/${dashboard.id}/cards`, 'PUT', dashboardCards)
+        await saveDashboard(`/dashboard/${dashboard.id}/cards`, {id: dashboard.id, dashboardCards}, 'PUT', session)
       }
       console.log(`dashboard ${dashboard.id} recreation complete`);
     }

@@ -4,16 +4,18 @@ const getSession = require('./api_calls/get_session');
 const getScrubbedSQL = require('./transform/get_scrubbed_sql');
 const createFileStructure = require('./transform/create_file_structure');
 const fs = require('fs');
+require('dotenv').config();
 
 async function main(questionSet){
   // const session = await getSession();
+  const database_id = process.env.DATABASE_ID
   const session = {"id":"1ac60d20-0838-4db0-acc4-bfc927ac3324"};
   const metabaseQuestions = [];
   const collections = await createFileStructure(session);
   const brokenQuestions = [];
 
   if (questionSet.length === 0) {
-    const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: 5});
+    const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: database_id});
     allDatabaseCards.forEach(card => {
       metabaseQuestions.push({
         card,
@@ -29,7 +31,7 @@ async function main(questionSet){
   }
   else {
     for (let i = 0; i < questionSet.length; i++) {
-      const card = await callAPI(session, `/card/${questionSet[i]}`, 'GET', null, {database: 5});
+      const card = await callAPI(session, `/card/${questionSet[i]}`, 'GET', null, {database: database_id});
       metabaseQuestions.push({
         card,
         id: card.id,
