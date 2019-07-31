@@ -18,7 +18,6 @@ async function main(questionSet){
     const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: database_id});
     allDatabaseCards.forEach(card => {
       metabaseQuestions.push({
-        card,
         id: card.id,
         database_id: card.database_id,
         collection_id: card.collection_id,
@@ -33,10 +32,12 @@ async function main(questionSet){
     for (let i = 0; i < questionSet.length; i++) {
       const card = await callAPI(session, `/card/${questionSet[i]}`, 'GET', null, {database: database_id});
       metabaseQuestions.push({
-        card,
         id: card.id,
         database_id: card.database_id,
+        description: card.description,
+        collection_position: card.collection_position,
         collection_id: card.collection_id,
+        display: card.display,
         name: card.name,
         dataset_query: card.dataset_query,
         segment: false,
@@ -61,7 +62,6 @@ async function main(questionSet){
         }
       else
         question.sql = `${question.dataset_query.native.query};`;
-
 
       if (question.collection_id === null) { question.collection_id = 'root'; };
 
