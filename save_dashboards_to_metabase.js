@@ -77,7 +77,7 @@ async function saveDashboardsToMetabase(flag) {
         });
       });
 
-      // Save new dashboard to metabase is --save flag is set
+      // Save new dashboard to metabase if --save flag is set
       let newDashboardID = '';
       if (saveEditFlag === '--save') {
         const newDashboardName = await saveDashboard(`/dashboard/`, dashboard, 'POST', session);

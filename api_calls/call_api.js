@@ -4,6 +4,7 @@ require('dotenv').config();
 
 /**
  *Function callAPI receives a metabase API endpoint as a parameter then sends a request and returns the data
+ * @param {object} session - the current user's session (contains a session id)
  * @param {String} apiEndpoint - The metabase API endpoint 
  * @param {String} method - The http method
  * @param {object} body - The body of the request
