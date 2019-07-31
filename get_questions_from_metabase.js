@@ -11,6 +11,7 @@ async function main(questionSet){
   const database_id = process.env.DATABASE_ID
   const session = {"id":"1ac60d20-0838-4db0-acc4-bfc927ac3324"};
   const metabaseQuestions = [];
+  console.log('Creating File Structure...')
   const collections = await createFileStructure(session);
   const brokenQuestions = [];
 
