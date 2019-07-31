@@ -20,6 +20,7 @@ async function postQuestion(apiEndpoint, question, session, method) {
       description: originalCard.description,
       collection_position: originalCard.collection_position,
       result_metadata: originalCard.result_metadata,
+      // collection_id set to 25 for debugging so that new questions are posted to my personal collection
       collection_id: 25,
       name: originalCard.name,//`dev_id_${question.id}`,
       dataset_query: data,
