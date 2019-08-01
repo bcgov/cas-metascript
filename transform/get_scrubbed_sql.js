@@ -1,7 +1,7 @@
 const call_api = require('../api_calls/call_api');
 const util = require('util');
 
-const scrubMetabaseSQL = (question, sql) => {
+const scrubMetabaseSQL = (question, sql, params) => {
 
   let scrubbedSQL = sql;
   scrubbedSQL = scrubbedSQL.replace(/"/g, '');
@@ -13,6 +13,12 @@ const scrubMetabaseSQL = (question, sql) => {
     const replaceStar = /(?<=SELECT)[\w\W]*(?=FROM)/g;
     scrubbedSQL = scrubbedSQL.replace(replaceStar, ' * ');
   };
+
+  if (params.length > 0) {
+    params.forEach(param => {
+      scrubbedSQL = scrubbedSQL.replace(/\?/, `'${param}'`);
+    });
+  }
   return scrubbedSQL;
 }
 
@@ -21,14 +27,16 @@ async function getScrubbedSQL(question, session) {
   try{
     const queryData = await call_api(session, `/card/${question.id}/query`, 'POST');
     let sqlFromMetabase;
-
+    let sqlParams;
       if (queryData.data.native_form)
         sqlFromMetabase = queryData.data.native_form.query;
-      else if (queryData.native)
+      else if (queryData.native) {
         sqlFromMetabase = queryData.native.query;
+        sqlParams = queryData.native.params;
+      }
 
     if (sqlFromMetabase) {
-      const scrubbedSQL = scrubMetabaseSQL(question, sqlFromMetabase);
+      const scrubbedSQL = scrubMetabaseSQL(question, sqlFromMetabase, sqlParams);
       return scrubbedSQL;
     }
   }
