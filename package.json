@@ -15,14 +15,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dleard/mb_automation.git"
+    "url": "git+https://github.com/bcgov/cas-metascript.git"
   },
   "author": "Dylan Leard (Button)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/dleard/mb_automation/issues"
+    "url": "https://github.com/bcgov/cas-metascript/issues"
   },
-  "homepage": "https://github.com/dleard/mb_automation#readme",
+  "homepage": "https://github.com/bcgov/cas-metascript#readme",
   "devDependencies": {
     "jest": "^24.8.0"
   }
