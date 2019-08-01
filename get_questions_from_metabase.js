@@ -18,7 +18,6 @@ async function getQuestionsFromMetabase(questionSet){
   const metabaseQuestions = [];
   console.log('Creating File Structure...')
   const collections = await createFileStructure(session);
-  const brokenQuestions = [];
 
   console.log('Getting questions from metabase...')
   // If no set of questions has been entered on the command line, get all questions from metabase
@@ -36,7 +35,6 @@ async function getQuestionsFromMetabase(questionSet){
         name: card.name,
         dataset_query: card.dataset_query,
         segment: false,
-        broken: false,
         sql: ''})
     });
   }
@@ -55,7 +53,6 @@ async function getQuestionsFromMetabase(questionSet){
         name: card.name,
         dataset_query: card.dataset_query,
         segment: false,
-        broken: false,
         sql: ''
       });
     }
@@ -80,23 +77,15 @@ async function getQuestionsFromMetabase(questionSet){
       // the collection_id for a question that lives in the 'Our Analytics' collection is null. Set it to root (to save it locally)
       if (question.collection_id === null) { question.collection_id = 'root'; };
 
-      // If the question is not broken, write it locally within it's collection folder
-      if (question.broken === false) {
-        const writeFile = util.promisify(fs.writeFile);
-        try {
-          await writeFile(`./metabase_questions/${collections.unixTimestamp}/${collections[question.collection_id].location}/${question.id}.json`, JSON.stringify(question));
-          console.log(`Question ${i+1} / ${metabaseQuestions.length} finished (Metabase card id: ${metabaseQuestions[i].id})`);
-        }
-        catch(e) { console.log(e); }
+      const writeFile = util.promisify(fs.writeFile);
+      try {
+        await writeFile(`./metabase_questions/${collections.unixTimestamp}/${collections[question.collection_id].location}/${question.id}.json`, JSON.stringify(question));
+        console.log(`Question ${i+1} / ${metabaseQuestions.length} finished (Metabase card id: ${metabaseQuestions[i].id})`);
       }
-      else {
-        brokenQuestions.push(`Index: ${i}, Question ID: ${question.id}`);
-        console.log(`Skipped question ${i} / ID: ${metabaseQuestions[i].id}: Broken Question`);
-      }
+      catch(e) { console.log(e); }
     }
     catch(e) { console.log(util.inspect(e, false, null, true /* enable colors */)); }
   }
-  console.log(`Broken Metabase Questions: ${brokenQuestions}`);
 }
 
 getQuestionsFromMetabase(process.argv.slice(2));

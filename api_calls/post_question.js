@@ -18,7 +18,7 @@ async function postQuestion(apiEndpoint, question, session, method) {
       description: question.description,
       collection_position: question.collection_position,
       // collection_id set for debugging so that new questions are posted to my personal collection
-      collection_id: 44,
+      collection_id: 46,
       name: question.name,//`dev_id_${question.id}`,
       dataset_query: data,
       display: question.display

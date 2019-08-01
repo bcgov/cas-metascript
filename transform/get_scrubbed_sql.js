@@ -21,15 +21,11 @@ async function getScrubbedSQL(question, session) {
   try{
     const queryData = await call_api(session, `/card/${question.id}/query`, 'POST');
     let sqlFromMetabase;
-    if (queryData.error) {
-      question.broken = true;
-    }
-    else {
+
       if (queryData.data.native_form)
         sqlFromMetabase = queryData.data.native_form.query;
       else if (queryData.native)
-        sqlFromMetabase = queryData.native;
-    }
+        sqlFromMetabase = queryData.native.query;
 
     if (sqlFromMetabase) {
       const scrubbedSQL = scrubMetabaseSQL(question, sqlFromMetabase);
