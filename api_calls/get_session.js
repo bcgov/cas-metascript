@@ -1,6 +1,9 @@
 const fetch = require("node-fetch");
 require('dotenv').config();
 
+/**
+ * Function getSession retrieves the current user's session and returns it for api calls
+ */
 async function getSession() {
 
   const userDetails = {

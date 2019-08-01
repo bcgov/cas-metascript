@@ -21,23 +21,32 @@ or
 A space-separated list of questions to save/edit`;
 
 //Note: metabase questions of type date 'previous n days' not currently supported
+
+/**
+ * Function save_question_to_metabase saves questions to metabase
+ * @param {Array} questionSet - the cmd line args can include flags and / or a subset of questions to save to metabase from local
+ */
 async function save_question_to_metabase(questionSet) {
   try {
     // const session = await getSession();
     const session = {"id":"1ac60d20-0838-4db0-acc4-bfc927ac3324"};
     const flags = [];
+    // If no args (flags / questionset throw error)
     if (questionSet[0] === undefined) {
       throw console.error(argumentError);
     }
     else {
+      // get the flags from the beginning of the command line args
       while(!parseInt(questionSet[0])) {
         flags.push(questionSet.shift());
         questionSet = questionSet.slice(0,questionSet.length);
+        // Throw error if too many or too few flags
         if (flags.length > 2 || flags.length === 0 || (flags.includes('--save') && flags.includes('--edit')))
           throw console.error(argumentError);
         if (questionSet.length === 0) break;
       }
     }
+    // if the flags include both --save and --edit throw an error
     if (!flags.includes('--save') && !flags.includes('--edit'))
       throw console.error(argumentError);
 

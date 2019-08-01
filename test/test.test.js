@@ -1,5 +1,9 @@
 const sql_to_mbql = require('../transform/sql_to_mbql_adv');
 
+/**
+ * This is a stand-in for the eventual test suite
+ */
+
 // Test the sql -> mbql translator
 test('test the sql_to_mbql translator', () => {
   const question = {

@@ -7,7 +7,7 @@ const fs = require('fs');
 require('dotenv').config();
 
 /**
- * getQuestionsFromMetabase gets questions from Metabase, scrubs the sql from metabase if necessary, creates a file structure
+ * Function getQuestionsFromMetabase gets questions from Metabase, scrubs the sql from metabase if necessary, creates a file structure
  * locally based on the hierarchy of collections in metabase and saves the questions locally within their collection folder
  * @param {Array} questionSet - a list of questions to get from metabase (if null get all questions from metabase) 
  */

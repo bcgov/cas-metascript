@@ -31,13 +31,16 @@ const replaceValues = (mbqlClause, columns, foreign_columns) => {
 /**
  * mapSQLValues takes data from a metabase API call then uses this data to convert named values in
  * the parsedSQL object to ID's (ie source_table: 'facility_details' --> source:table: 219)
+ * @param {object} question - the current metabase question object to be mapped
+ * @param {object} session - the user's session object containing their session id
  */
 async function mapSQLValuesToID(question, session) {
+  // The metadata is a complete list of all the tables / columns / fields in the metabase database
   const metadata = await callAPI(session, `/database/${question.database_id}/metadata`, 'GET')
   metadata.tables.forEach(table => {
     if (table.name === question.mbql.source_table[0] && table.schema.toUpperCase() === question.schema.toUpperCase()) {
       question.mbql.source_table.push(table.id)
-
+      // find the metabase field id that corresponds to the sql column name
       question.mbql.columns.forEach(column => {
         table.fields.forEach(field => {
           if (field.name === column[0]) {
@@ -46,6 +49,7 @@ async function mapSQLValuesToID(question, session) {
         })
       })
     }
+    // find the metabase field id that corresponds to the sql column name (for fk relations)
     question.mbql.foreign_columns.forEach(foreign_column => {
       if (table.name === foreign_column[0] && table.schema.toUpperCase() === question.schema.toUpperCase()) {
         table.fields.forEach(field => {
@@ -56,6 +60,7 @@ async function mapSQLValuesToID(question, session) {
       }
     })
   })
+  // replace the values in each of the mbql structure items
   question.mbql.filter = replaceValues(question.mbql.filter, question.mbql.columns, question.mbql.foreign_columns)
   question.mbql.breakout = replaceValues(question.mbql.breakout, question.mbql.columns, question.mbql.foreign_columns)
   question.mbql.fields = replaceValues(question.mbql.fields, question.mbql.columns, question.mbql.foreign_columns)

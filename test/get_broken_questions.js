@@ -34,7 +34,7 @@ async function getBrokenQuestions() {
       process.exit(0);
     }
     else {
-      console.log(`Broken Cards (Metabase ID_Name): ${brokenCards}`);
+      console.log(`Broken Cards (ID_Name): ${brokenCards}`);
       process.exit(1);
     }
   }

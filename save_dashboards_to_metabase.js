@@ -11,6 +11,10 @@ require('dotenv').config();
  *  A bug issue has been placed with metabase https://github.com/metabase/metabase/issues/10432
 */
 
+/**
+ * Function saveDashboardsToMetabase re-saves dashboards to metabase with new/edited questions
+ * @param {String} flag - --save saves a new version of the dashboard with a new metabase ID --edit edits the questions in the current dashboard
+ */
 async function saveDashboardsToMetabase(flag) {
   try {
     // const session = await getSession();

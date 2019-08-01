@@ -1,7 +1,11 @@
 const fs = require('fs');
 const path = require('path');
 const util = require('util');
-
+/**
+ * Function getQuestionFiles retrieves the questions from the local file directory to which they were saved
+ * @param {Array} questionSet - a list of questions to get
+ * @param {Array} flags - The cmd line flags (if --all is set get all questions from the root directory down)
+ */
 const getQuestionFiles = (questionSet, flags) => {
 
   const regex = /\d+/
