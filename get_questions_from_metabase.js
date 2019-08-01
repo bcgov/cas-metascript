@@ -66,10 +66,11 @@ async function getQuestionsFromMetabase(questionSet){
       if (question.dataset_query.type !== 'native') {
         const scrubbedSQL = await getScrubbedSQL(question, session);
         question.sql = scrubbedSQL;
-        // TODO: find out how to deal with segments
-        if (metabaseQuestions[i].dataset_query.query.filter && metabaseQuestions[i].dataset_query.query.filter[0] === 'segment')
-          metabaseQuestions[i].segment = true;
-        }
+        // TODO: find out how to deal with segments. Currently I am inserting the params for the segment directly into the sql query,
+        // which means we lose the relation to the segment in metabase and the logic from the segment is inserted directly into the filter
+        // if (metabaseQuestions[i].dataset_query.query.filter && metabaseQuestions[i].dataset_query.query.filter[0] === 'segment')
+        //   metabaseQuestions[i].segment = true;
+      }
       else
         // set the sql to the native query if the query type is native
         question.sql = `${question.dataset_query.native.query};`;
