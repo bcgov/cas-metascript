@@ -24,7 +24,7 @@ const sql_to_mbql = (question) => {
   // const ast = parser.astify(testSQL);
   const ast = parser.astify(question.sql);
 
-  // console.log(util.inspect(ast.from, false, null, true /* enable colors */));
+  // console.log(util.inspect(ast, false, null, true /* enable colors */));
   // Add the from table name to the source table
   mbql_query.source_table.push(ast.from[0].table);
   const from = ast.from;
@@ -76,8 +76,12 @@ const sql_to_mbql = (question) => {
       // If the field in the select statement is an aggregate function
       else if (field.expr.type === 'aggr_func') {
         let joinTable = {};
+        // If the aggregate function is a function on all push only the function name (sum, count, etc)
+        if (field.expr.args.expr.type === 'star') {
+          mbql_query.aggregation.push([field.expr.name])
+        }
         // If the table in the expression is a foreign table reference
-        if (field.expr.args.expr.table !== mbql_query.source_table[0]) {
+        else if (field.expr.args.expr.table !== mbql_query.source_table[0]) {
           parseForeignTable('aggregate', from, field.expr.args.expr)
         }
         // If the table in the expression is the same as the source table
