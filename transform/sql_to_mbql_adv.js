@@ -21,7 +21,6 @@ const sql_to_mbql = (question) => {
   }
 
   // astify parses the sql query into a traversable tree
-  // const ast = parser.astify(testSQL);
   const ast = parser.astify(question.sql);
 
   // console.log(util.inspect(ast, false, null, true /* enable colors */));
