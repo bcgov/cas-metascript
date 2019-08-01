@@ -25,7 +25,7 @@ const scrubMetabaseSQL = (question, sql, params) => {
 
   // If a question returns params it is using a metabase segment, this inserts the segment params into the sql,
   // but when the question is saved, the segment is lost and the entire segment is added into the filter
-  if (params.length > 0) {
+  if (params) {
     params.forEach(param => {
       scrubbedSQL = scrubbedSQL.replace(/\?/, `'${param}'`);
     });

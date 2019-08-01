@@ -62,8 +62,8 @@ async function getQuestionsFromMetabase(questionSet){
     let question = metabaseQuestions[i];
 
     try {
-      // Scrub the sql from metabase (if the query is not native)
-      if (question.dataset_query.type !== 'native') {
+      // Scrub the sql from metabase (if the query is not native / the source table is another card)
+      if (question.dataset_query.type !== 'native' && !question.dataset_query.query["source-table"].match(/card.*/)) {
         const scrubbedSQL = await getScrubbedSQL(question, session);
         question.sql = scrubbedSQL;
         // TODO: find out how to deal with segments. Currently I am inserting the params for the segment directly into the sql query,
@@ -71,7 +71,7 @@ async function getQuestionsFromMetabase(questionSet){
         // if (metabaseQuestions[i].dataset_query.query.filter && metabaseQuestions[i].dataset_query.query.filter[0] === 'segment')
         //   metabaseQuestions[i].segment = true;
       }
-      else
+      else if (question.dataset_query.type === 'native')
         // set the sql to the native query if the query type is native
         question.sql = `${question.dataset_query.native.query};`;
 
