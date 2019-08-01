@@ -62,8 +62,6 @@ async function getQuestionsFromMetabase(questionSet){
   }
 
   for (let i = 0; i < metabaseQuestions.length; i++) {
-    console.log(i);
-    console.log(metabaseQuestions[i].id);
     let question = metabaseQuestions[i];
 
     try {
@@ -87,7 +85,7 @@ async function getQuestionsFromMetabase(questionSet){
         const writeFile = util.promisify(fs.writeFile);
         try {
           await writeFile(`./metabase_questions/${collections.unixTimestamp}/${collections[question.collection_id].location}/${question.id}.json`, JSON.stringify(question));
-          console.log(`Question ${i+1} / ${metabaseQuestions.length} finished`);
+          console.log(`Question ${i+1} / ${metabaseQuestions.length} finished (Metabase card id: ${metabaseQuestions[i].id})`);
         }
         catch(e) { console.log(e); }
       }
