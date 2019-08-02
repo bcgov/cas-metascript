@@ -29,7 +29,7 @@ A space-separated list of questions to save/edit`;
 async function save_question_to_metabase(questionSet) {
   try {
     // const session = await getSession();
-    const session = {"id":"1ac60d20-0838-4db0-acc4-bfc927ac3324"};
+    const session = JSON.parse(process.env.SESSION);
     const flags = [];
     // If no args (flags / questionset throw error)
     if (questionSet[0] === undefined) {
