@@ -2,7 +2,7 @@ const mockedEnv = require('mocked-env');
 const { setupRecorder } = require('nock-record');
 const getSession = require('../../api_calls/get_session');
 
-const record = setupRecorder({ mode: 'dryrun' });
+const record = setupRecorder({ mode: 'record' });
 
 describe('getSession() tests', () => {
   test('getSession fails with bad credentials', async () => {
@@ -22,16 +22,27 @@ describe('getSession() tests', () => {
     restore();
   });
 
-  xtest('getSession returns a session id with good credentials', async () => {
+  test('getSession returns a session id with good credentials', async () => {
 
     const restore = mockedEnv ({
+      METABASE_USERNAME: 'good@user.is',
+      METABASE_PASSWORD: 'goodpassword',
       URL:'https://metabase-wksv3k-test.pathfinder.gov.bc.ca/api'
     });
 
+    const  { completeRecording, assertScopesFinished } = await record('get_session_with_good_credentials');
     const session = await getSession();
+    completeRecording();
+
     expect(typeof session).toBe('object')
     expect(typeof session.id).toBe('string')
     expect(session.id.length).toBe(36);
+    assertScopesFinished();
+
     restore();
+  });
+
+  xtest('getSession returns a cached session if session is still valid', () => {
+
   });
 });
