@@ -5,11 +5,11 @@ require('dotenv').config();
 /**
  * Function getSession retrieves the current user's session and returns it for api calls
  */
-async function getSession() {
+async function getSession({force = false}={}) {
   const username = process.env.METABASE_USERNAME;
   const password = process.env.METABASE_PASSWORD;
 
-  if (session[username]) { return session[username]; }
+  if (session[username] && !force) { return session[username]; }
 
   const userDetails = {
     username,

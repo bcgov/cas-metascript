@@ -45,4 +45,8 @@ describe('getSession() tests', () => {
   xtest('getSession returns a cached session if session is still valid', () => {
 
   });
+
+  xtest('getSession overwrites the session if forced', () => {
+
+  });
 });

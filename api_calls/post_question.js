@@ -1,13 +1,16 @@
 const fetch = require("node-fetch");
 const util = require('util');
+const getSession = require('./get_session');
 
 /**
  * Function postQuestion sends a post request to metabase to save a question to metabase
  * @param {String} apiEndpoint - The metabase API endpoint 
  * @param {object} body - The body of the request
  */
-async function postQuestion(apiEndpoint, question, session, method) {
+async function postQuestion(apiEndpoint, question, sessionFlag, method) {
   
+  const session = await getSession(sessionFlag);
+
   const data = question.send.dataset_query;
 
   let card = {};
@@ -19,7 +22,7 @@ async function postQuestion(apiEndpoint, question, session, method) {
       collection_position: question.collection_position,
       // collection_id set for debugging so that new questions are posted to my personal collection
       collection_id: 46,
-      name: question.name,//`dev_id_${question.id}`,
+      name: question.name,
       dataset_query: data,
       display: question.display
     }
@@ -40,9 +43,16 @@ async function postQuestion(apiEndpoint, question, session, method) {
     body: JSON.stringify(card),
     method
   };
-  const res = await fetch(url, param);
-  console.log(res.status);
-  return res;
+  try {
+    const res = await fetch(url, param);
+    console.log(res.status);
+    return res;
+  } catch(e) {
+    if (sessionFlag) { return e; }
+    const res = await postQuestion(apiEndpoint, question, true, method);
+    console.log(res.status);
+    return res;
+  }
 };
 
 module.exports = postQuestion;
