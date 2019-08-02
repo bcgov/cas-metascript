@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/bcgov/cas-metascript#readme",
   "devDependencies": {
-    "jest": "^24.8.0"
+    "jest": "^24.8.0",
+    "mocked-env": "^1.3.1"
   }
 }
