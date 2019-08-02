@@ -1,14 +1,19 @@
 const fetch = require("node-fetch");
+let session = {};
 require('dotenv').config();
 
 /**
  * Function getSession retrieves the current user's session and returns it for api calls
  */
 async function getSession() {
+  const username = process.env.METABASE_USERNAME;
+  const password = process.env.METABASE_PASSWORD;
+
+  if (session[username]) { return session[username]; }
 
   const userDetails = {
-    username: process.env.METABASE_USERNAME,
-    password: process.env.METABASE_PASSWORD
+    username,
+    password
   }
 
   const url = `${process.env.URL}/session`;
@@ -22,9 +27,8 @@ async function getSession() {
   }
   try {
     const res =  await fetch(url, param)
-    const data = await res.json();
-    
-    return data;
+    session[username] = await res.json();
+    return session[username];
   }
   catch(e) {console.log(e)};
 }

@@ -1,6 +1,7 @@
 const callAPI = require('../api_calls/call_api');
-const getSession = require('../api_calls/get_session');
+// const getSession = require('../api_calls/get_session');
 const util = require('util');
+let session
 require('dotenv').config();
 
 /**

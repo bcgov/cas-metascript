@@ -1,21 +1,47 @@
 const sql_to_mbql = require('../../transform/sql_to_mbql_adv');
 
-/**
- * This is a stand-in for the eventual test suite
- */
+const question = {
+  sql: '',
+  dataset_query:{}
+}
 
-// Test the sql -> mbql translator
-test('test the sql_to_mbql translator', () => {
-  const question = {
-    sql: 'select fuel.abc, fuel.cde, report.fgh from ggircs.fuel left join ggircs.report on fuel.report_id = report.id',
-    dataset_query:{
-      query: {
-        fields:{
-          0:[123]
-        }
-      }
-    }
-  }
+test('test conversion of a single table query', () => {
+  question.sql = 'select fuel.abc, fuel.cde from ggircs.fuel';
+  question.dataset_query = {query:{fields:{0:[123]}}};
+  
+  expect(sql_to_mbql(question))
+  .toStrictEqual(
+    {"aggregation": [],
+     "breakout": [],
+     "columns": [["abc"], ["cde"]],
+     "fields": ["abc", "cde"],
+     "filter": [],
+     "foreign_columns": [],
+     "order-by": [],
+     "source_table": ["fuel"]}
+  );
+});
+
+test('test conversion of a query with a where clause', () => {
+  question.sql = `select fuel.abc, fuel.cde from ggircs.fuel where fuel.abc = 'Rick Sanchez' `;
+  question.dataset_query = {query:{fields:{0:[123]}}};
+  
+  expect(sql_to_mbql(question))
+  .toStrictEqual(
+    {"aggregation": [],
+     "breakout": [],
+     "columns": [["abc"], ["cde"]],
+     "fields": ["abc", "cde"],
+     "filter": [["=", "abc", "Rick Sanchez"]],
+     "foreign_columns": [],
+     "order-by": [],
+     "source_table": ["fuel"]}
+  );
+});
+
+test('test conversion of a query with a foreign table', () => {
+  question.sql = 'select fuel.abc, fuel.cde, report.fgh from ggircs.fuel left join ggircs.report on fuel.report_id = report.id';
+  question.dataset_query = {query:{fields:{0:[123]}}};
   expect(sql_to_mbql(question))
   .toStrictEqual(
     {"aggregation": [],
@@ -28,5 +54,3 @@ test('test the sql_to_mbql translator', () => {
      "source_table": ["fuel"]}
   );
 });
-
-//TODO: write test suite
