@@ -1,0 +1,1 @@
+const morph = require('mock-env').morph;

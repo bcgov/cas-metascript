@@ -8,7 +8,7 @@ async function getSession() {
 
   const userDetails = {
     username: process.env.METABASE_USERNAME,
-    password: process.env.METABASE_PASSWORD,
+    password: process.env.METABASE_PASSWORD
   }
 
   const url = `${process.env.URL}/session`;
