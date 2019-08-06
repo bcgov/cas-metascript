@@ -172,8 +172,6 @@ const sql_to_mbql = (question) => {
     mbql_query.filter = mbql_query.filter.pop();
   }
 
-  console.log(mbql_query.columns.flat().includes('abc'));
-
   /*************************************
    *    GROUPBY / ORDERBY CLAUSE       *
    *************************************/

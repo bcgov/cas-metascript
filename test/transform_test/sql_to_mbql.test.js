@@ -27,7 +27,6 @@ test('test conversion of a query with a where clause', () => {
   question.sql = `select fuel.abc, fuel.cde from ggircs.fuel where fuel.abc = 'Rick Sanchez' `;
   question.dataset_query = {query:{fields:{0:[123]}}};
   
-  console.log(util.inspect(sql_to_mbql(question), false, null, true /* enable colors */));
   expect(sql_to_mbql(question))
   .toStrictEqual(
     {"aggregation": [],
