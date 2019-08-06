@@ -4,3 +4,4 @@ scratch
 node_modules
 output
 metabase_questions
+session.json

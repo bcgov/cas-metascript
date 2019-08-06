@@ -1,4 +1,5 @@
 const fetch = require("node-fetch");
+const fs = require('fs');
 let session = {};
 require('dotenv').config();
 
@@ -8,6 +9,13 @@ require('dotenv').config();
 async function getSession({force = false}={}) {
   const username = process.env.METABASE_USERNAME;
   const password = process.env.METABASE_PASSWORD;
+
+  if (fs.existsSync(`${__dirname}/session/session.json`)) {
+    session = JSON.parse(fs.readFileSync(`${__dirname}/session/session.json`));
+  }
+  else {
+    fs.writeFileSync(`${__dirname}/session/session.json`, JSON.stringify({}));
+  }
 
   if (session[username] && !force) { return session[username]; }
 
@@ -28,6 +36,8 @@ async function getSession({force = false}={}) {
   try {
     const res =  await fetch(url, param)
     session[username] = await res.json();
+    if (res.status === 200)
+      fs.writeFileSync(`${__dirname}/session/session.json`, JSON.stringify(session));
     return session[username];
   }
   catch(e) {console.log(e)};

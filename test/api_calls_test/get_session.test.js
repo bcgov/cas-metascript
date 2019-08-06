@@ -9,11 +9,11 @@ describe('getSession() tests', () => {
     const restore = mockedEnv({
       METABASE_USERNAME: 'bad@credentials.is',
       METABASE_PASSWORD: 'accessdenied',
-      URL:'https://metabase-wksv3k-test.pathfinder.gov.bc.ca/api'
+      URL: process.env.TEST_URL
     });
 
     const { completeRecording, assertScopesFinished } = await record("get_session_with_bad_credentials");
-    const session = await getSession();
+    const session = await getSession({force: true});
     completeRecording();
 
     expect(session).toStrictEqual({"errors": {"password": "did not match stored password"}});
@@ -27,11 +27,11 @@ describe('getSession() tests', () => {
     const restore = mockedEnv ({
       METABASE_USERNAME: 'good@user.is',
       METABASE_PASSWORD: 'goodpassword',
-      URL:'https://metabase-wksv3k-test.pathfinder.gov.bc.ca/api'
+      URL: process.env.TEST_URL
     });
 
     const  { completeRecording, assertScopesFinished } = await record('get_session_with_good_credentials');
-    const session = await getSession();
+    const session = await getSession({force: true});
     completeRecording();
 
     expect(typeof session).toBe('object')

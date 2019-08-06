@@ -5,7 +5,7 @@ let restore;
 describe('callAPI() tests', () => {
   test('callAPI fails with a bad session id', async () => {
     restore = mockedEnv({
-      URL:'https://metabase-wksv3k-test.pathfinder.gov.bc.ca/api'
+      URL: process.env.TEST_URL
     });
     const session = {id: '1234'};
     const result = await callAPI(session, '/database', 'GET');
@@ -15,7 +15,7 @@ describe('callAPI() tests', () => {
 
   test('callAPI returns data with a good session id', async () => {
     restore = mockedEnv({
-      URL:'https://metabase-wksv3k-test.pathfinder.gov.bc.ca/api'
+      URL: process.env.TEST_URL
     });
     const result = await callAPI(JSON.parse(process.env.TEST_SESSION), '/database', 'GET');
     expect(result).toBeDefined;
