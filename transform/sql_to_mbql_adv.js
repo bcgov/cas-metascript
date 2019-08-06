@@ -43,11 +43,11 @@ const sql_to_mbql = (question) => {
       then the foreign key in the source table is on the left side of the clause) */
     if (joinTable.on.right.table === tableName.table || joinTable.on.right.table === tableName.alias) {
       mbql_query[mbqlClause].push(['fk->', `${joinTable.on.left.column}`, `${tableName.table}.${tablePath.column}`]);
-      mbql_query.columns.push([`${joinTable.on.left.column}`]);
+      if (!mbql_query.columns.flat().includes(`${joinTable.on.left.column}`)) { mbql_query.columns.push([`${joinTable.on.left.column}`]); }
     }
     else {
       mbql_query[mbqlClause].push(['fk->', `${joinTable.on.right.column}`, `${tableName.table}.${tablePath.column}`]);
-      mbql_query.columns.push([`${joinTable.on.right.column}`]);
+      if (!mbql_query.columns.flat().includes(`${joinTable.on.right.column}`)) { mbql_query.columns.push([`${joinTable.on.right.column}`]); }
     }
     mbql_query.foreign_columns.push([tableName.table, tablePath.column]);
   }
@@ -69,12 +69,11 @@ const sql_to_mbql = (question) => {
         }
         else {
           mbql_query.fields.push(field.expr.column)
-          mbql_query.columns.push([field.expr.column]);
+          if (!mbql_query.columns.flat().includes(field.expr.column)) { mbql_query.columns.push([field.expr.column]); }
         }
       }
       // If the field in the select statement is an aggregate function
       else if (field.expr.type === 'aggr_func') {
-        let joinTable = {};
         // If the aggregate function is a function on all push only the function name (sum, count, etc)
         if (field.expr.args.expr.type === 'star') {
           mbql_query.aggregation.push([field.expr.name])
@@ -86,7 +85,7 @@ const sql_to_mbql = (question) => {
         // If the table in the expression is the same as the source table
         else {
           mbql_query.aggregation.push([field.expr.name, field.expr.args.expr.column])
-          mbql_query.columns.push([field.expr.args.expr.column]);
+          if (!mbql_query.columns.flat().includes(field.expr.args.expr.column)) { mbql_query.columns.push([field.expr.args.expr.column]); }
         }
       }
     });
@@ -148,17 +147,17 @@ const sql_to_mbql = (question) => {
             then the foreign key in the source table is on the left side of the clause) */
           if (joinTable.on.right.table === tableName.table || joinTable.on.right.table === tableName.alias) {
             array.push('fk->', `${joinTable.on.left.column}`, `${tableName.table}.${obj.column}`);
-            mbql_query.columns.push([`${joinTable.on.left.column}`]);
+            if (!mbql_query.columns.flat().includes(joinTable.on.left.column)) { mbql_query.columns.push([`${joinTable.on.left.column}`]); }
           }
           else {
             array.push('fk->', `${joinTable.on.right.column}`, `${tableName.table}.${obj.column}`);
-            mbql_query.columns.push([`${joinTable.on.right.column}`]);
+            if (!mbql_query.columns.flat().includes(joinTable.on.right.column)) { mbql_query.columns.push([`${joinTable.on.right.column}`]); }
           }
           mbql_query.foreign_columns.push([tableName.table, obj.column])
         }
         else {
           array.push(obj.column);
-          mbql_query.columns.push([obj.column]);
+          if (!mbql_query.columns.flat().includes(obj.column)) { mbql_query.columns.push([obj.column]); }
         }
       }
       else if (obj.value !== null)
@@ -172,6 +171,8 @@ const sql_to_mbql = (question) => {
     // The function finishes with one too many outer arrays housing all the inner arrays. So pop goes the weasel
     mbql_query.filter = mbql_query.filter.pop();
   }
+
+  console.log(mbql_query.columns.flat().includes('abc'));
 
   /*************************************
    *    GROUPBY / ORDERBY CLAUSE       *
@@ -187,7 +188,7 @@ const sql_to_mbql = (question) => {
         }
         else {
           mbql_query.breakout.push(groupField.column)
-          mbql_query.columns.push([groupField.column]);
+          if (!mbql_query.columns.flat().includes(groupField.column)) { mbql_query.columns.push([groupField.column]); }
         }
       }
     })
@@ -212,17 +213,17 @@ const sql_to_mbql = (question) => {
             then the foreign key in the source table is on the left side of the clause) */
           if (joinTable.on.right.table === tableName.table || joinTable.on.right.table === tableName.alias) {
             mbql_query['order-by'].push([orderedField.type, ['fk->', `${joinTable.on.left.column}`, `${tableName.table}.${orderedField.expr.column}`]]);
-            mbql_query.columns.push([`${joinTable.on.left.column}`]);
+            if (!mbql_query.columns.flat().includes(joinTable.on.left.column)) { mbql_query.columns.push([`${joinTable.on.left.column}`]); }
           }
           else {
             mbql_query['order-by'].push([orderedField.type, ['fk->', `${joinTable.on.right.column}`, `${tableName.table}.${orderedField.expr.column}`]]);
-            mbql_query.columns.push([`${joinTable.on.right.column}`]);
+            if (!mbql_query.columns.flat().includes(joinTable.on.right.column)){ mbql_query.columns.push([`${joinTable.on.right.column}`]); }
           }
           mbql_query.foreign_columns.push([`${tableName.table}`, orderedField.expr.column])
         }
         else {
           mbql_query['order-by'].push([orderedField.type, orderedField.expr.column])
-          mbql_query.columns.push([orderedField.expr.column]);
+          if (!mbql_query.columns.flat().includes(orderedField.expr.column)) { mbql_query.columns.push([orderedField.expr.column]); }
         }
       }
     })
