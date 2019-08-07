@@ -1,4 +1,4 @@
-  const sql_to_mbql = require('../../../transform/sql_to_mbql_adv');
+const sql_to_mbql = require('../../../transform/sql_to_mbql_adv');
 const util = require('util');
 
 describe('sql -> mbql format conversion tests', () => {
