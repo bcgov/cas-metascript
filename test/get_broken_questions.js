@@ -15,14 +15,8 @@ async function getBrokenQuestions() {
     const session = JSON.parse(process.env.SESSION);
     const database_id = process.env.DATABASE_ID;
     const brokenCards = [];
-    // const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: database_id});
-    const allDatabaseCards = []
-    // Debugging (don't get all cards every time)
-    const questionSet = [100, 99, 98, 71];
-    for (let i = 0; i < 5; i++) {
-      const card = await callAPI(session, `/card/${questionSet[i]}`, 'GET', null, {database: database_id});
-      allDatabaseCards.push(card);
-    }
+    const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: database_id});
+
     for (let i = 0; i < allDatabaseCards.length; i++) {
     const queryData = await callAPI(session, `/card/${allDatabaseCards[i].id}/query`, 'POST');
       if (queryData.error) {

@@ -41,8 +41,11 @@ describe('getSession() tests', () => {
 
     restore();
   });
+});
 
-  // test('getSession returns a cached session if session is still valid', async () => {
+//DEPRECATED TESTS
+
+// test('getSession returns a cached session if session is still valid', async () => {
   //   const restore = mockedEnv ({
   //     METABASE_USERNAME: 'good@user.is',
   //     METABASE_PASSWORD: 'goodpassword',
@@ -71,4 +74,3 @@ describe('getSession() tests', () => {
   //   assertScopesFinished();
   //   restore();
   // });
-});

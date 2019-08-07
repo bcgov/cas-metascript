@@ -1,5 +1,5 @@
 const mockedEnv = require('mocked-env');
-const callAPI = require('../../api_calls/get_session');
+const callAPI = require('../../api_calls/call_api');
 let restore;
 
 describe('callAPI() tests', () => {
@@ -20,6 +20,7 @@ describe('callAPI() tests', () => {
     const result = await callAPI(JSON.parse(process.env.TEST_SESSION), '/database', 'GET');
     expect(result).toBeDefined;
     expect(typeof result).toBe('object');
+    expect(typeof result[0].id).toBe('number');
     restore();
   });
 });

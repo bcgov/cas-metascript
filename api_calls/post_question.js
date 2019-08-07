@@ -1,6 +1,5 @@
 const fetch = require("node-fetch");
 const util = require('util');
-const getSession = require('./get_session');
 
 /**
  * Function postQuestion sends a post request to metabase to save a question to metabase

@@ -23,10 +23,11 @@ async function callAPI(session, apiEndpoint, method, body, params) {
   if (method === 'POST' || method === 'PUT') {
     param.body = JSON.stringify(body);
   }
-  const res = await fetch(url, param);
-  const data = await res.json();
-
-  return data;
+  try {
+    const res = await fetch(url, param);
+    const data = await res.json();
+    return data;
+  } catch(e) { return e; }
 };
 
 module.exports = callAPI;
