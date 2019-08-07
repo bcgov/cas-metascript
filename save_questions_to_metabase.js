@@ -1,7 +1,6 @@
 const util = require('util');
-const callAPI = require('./api_calls/call_api');
-const getSession = require('./api_calls/get_session');
-const convert = require('./transform/convert_to_mbql');
+const sqlToMbql = require('./transform/sql_to_mbql_adv');
+const mapSQLValuesToID = require('./transform/mapSQLValuesToID');
 const removeDimensionFields = require('./transform/remove_dimension_fields');
 const saveQuestion = require('./api_calls/post_question');
 const getQuestionFiles = require('./transform/get_question_files');
@@ -67,7 +66,8 @@ async function save_question_to_metabase(questionSet) {
       else if (typeof question.dataset_query.query["source-table"] === 'string' && question.dataset_query.query["source-table"].match(/card.*/))
         question.send.dataset_query = question.dataset_query;
       else {
-        question = await convert(question, session);
+        question.mbql = sqlToMbql(question);
+        question = await mapSQLValuesToID(question, session);
         question = await removeDimensionFields(question, session);
 
         question.send.dataset_query.query["source-table"] = question.mbql.source_table[1];
