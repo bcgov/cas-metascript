@@ -18,7 +18,8 @@ describe('callAPI() tests', () => {
 
   test('callAPI returns data with a good session id', async () => {
     restore = mockedEnv({
-      URL: process.env.TEST_URL
+      URL: process.env.TEST_URL,
+      TEST_SESSION: `{"id":"9f707921-b9a1-4dfb-ae58-b22c37137d1b"}`
     });
 
     const  { completeRecording, assertScopesFinished } = await record('callAPI_with_valid_session');
