@@ -9,7 +9,6 @@ describe('remove_dimension_fields tests', () => {
       fields: []
     }  
   }
-
   beforeEach(() => {
     callAPI.mockReset();
   });
