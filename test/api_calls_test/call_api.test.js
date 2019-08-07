@@ -1,6 +1,9 @@
 const mockedEnv = require('mocked-env');
+const { setupRecorder } = require('nock-record');
 const callAPI = require('../../api_calls/call_api');
 let restore;
+
+const record = setupRecorder({ mode: 'record' });
 
 describe('callAPI() tests', () => {
   test('callAPI fails with a bad session id', async () => {
@@ -17,10 +20,15 @@ describe('callAPI() tests', () => {
     restore = mockedEnv({
       URL: process.env.TEST_URL
     });
+
+    const  { completeRecording, assertScopesFinished } = await record('callAPI_with_valid_session');
     const result = await callAPI(JSON.parse(process.env.TEST_SESSION), '/database', 'GET');
+    completeRecording();
+
     expect(result).toBeDefined;
     expect(typeof result).toBe('object');
     expect(typeof result[0].id).toBe('number');
+    assertScopesFinished();
     restore();
   });
 });
