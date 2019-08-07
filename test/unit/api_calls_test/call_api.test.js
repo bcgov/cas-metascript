@@ -1,6 +1,6 @@
 const mockedEnv = require('mocked-env');
 const { setupRecorder } = require('nock-record');
-const callAPI = require('../../api_calls/call_api');
+const callAPI = require('../../../api_calls/call_api');
 let restore;
 
 const record = setupRecorder({ mode: 'record' });

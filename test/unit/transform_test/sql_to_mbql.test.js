@@ -1,4 +1,4 @@
-const sql_to_mbql = require('../../transform/sql_to_mbql_adv');
+  const sql_to_mbql = require('../../../transform/sql_to_mbql_adv');
 const util = require('util');
 
 describe('sql -> mbql format conversion tests', () => {
@@ -53,6 +53,38 @@ describe('sql -> mbql format conversion tests', () => {
       "filter": [],
       "foreign_columns": [["report", "fgh"]],
       "order-by": [],
+      "source_table": ["fuel"]}
+    );
+  });
+
+  test('test conversion of a query with an aggregation', () => {
+    question.sql = 'select sum(fuel.abc), fuel.cde, report.fgh from ggircs.fuel left join ggircs.report on fuel.report_id = report.id';
+    question.dataset_query = {query:{fields:{0:[123]}}};
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [["SUM", 'abc']],
+      "breakout": [],
+      "columns": [["abc"], ["cde"], ["report_id"]],
+      "fields": ["cde", ["fk->", "report_id", "report.fgh"]],
+      "filter": [],
+      "foreign_columns": [["report", "fgh"]],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    );
+  });
+
+  test('test conversion of a query with an group by / order by', () => {
+    question.sql = 'select sum(fuel.abc), fuel.cde, report.fgh from ggircs.fuel left join ggircs.report on fuel.report_id = report.id group by fuel.cde order by fuel.cde DESC';
+    question.dataset_query = {query:{fields:{0:[123]}}};
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [["SUM", 'abc']],
+      "breakout": ["cde"],
+      "columns": [["abc"], ["cde"], ["report_id"]],
+      "fields": ["cde", ["fk->", "report_id", "report.fgh"]],
+      "filter": [],
+      "foreign_columns": [["report", "fgh"]],
+      "order-by": [['DESC', 'cde']],
       "source_table": ["fuel"]}
     );
   });
