@@ -34,7 +34,7 @@ const scrubMetabaseSQL = (question, sql, params) => {
 }
 
 async function getScrubbedSQL(question, session) {
-  
+
   try{
     // Must run the query to retrieve the native sql
     const queryData = await call_api(session, `/card/${question.id}/query`, 'POST');

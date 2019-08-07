@@ -24,4 +24,8 @@ jobs:
           key: v1-dependencies-{{ checksum "package.json" }}
 
       # run tests!
-      - run: npm test
+      - run:
+          name: Run tests
+          command: yarn test
+          environment:
+            TEST_URL: https://cas-metascript-wksv3k-tools.pathfinder.gov.bc.ca/api
