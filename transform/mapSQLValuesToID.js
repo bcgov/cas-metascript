@@ -65,7 +65,6 @@ async function mapSQLValuesToID(question, session) {
   question.mbql.fields = replaceValues(question.mbql.fields, question.mbql.columns, question.mbql.foreign_columns)
   question.mbql.aggregation = replaceValues(question.mbql.aggregation, question.mbql.columns, question.mbql.foreign_columns)
   question.mbql['order-by'] = replaceValues(question.mbql['order-by'], question.mbql.columns, question.mbql.foreign_columns)
-  
   return question;
 }
 
