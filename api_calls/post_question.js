@@ -7,10 +7,7 @@ const getSession = require('./get_session');
  * @param {String} apiEndpoint - The metabase API endpoint 
  * @param {object} body - The body of the request
  */
-async function postQuestion(apiEndpoint, question, sessionFlag, method) {
-  
-  const session = await getSession(sessionFlag);
-
+async function postQuestion(apiEndpoint, question, session, method) {
   const data = question.send.dataset_query;
 
   let card = {};
@@ -48,8 +45,6 @@ async function postQuestion(apiEndpoint, question, sessionFlag, method) {
     console.log(res.status);
     return res;
   } catch(e) {
-    if (sessionFlag) { return e; }
-    const res = await postQuestion(apiEndpoint, question, true, method);
     console.log(res.status);
     return res;
   }
