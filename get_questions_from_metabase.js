@@ -13,8 +13,8 @@ require('dotenv').config();
  */
 async function getQuestionsFromMetabase(questionSet){
   const session = await getSession();
-  // const database_id = process.env.DATABASE_ID
-  const session = JSON.parse(process.env.SESSION);
+  const database_id = process.env.DATABASE_ID;
+  // const session = JSON.parse(process.env.SESSION);
   const metabaseQuestions = [];
   console.log('Creating File Structure...')
   const collections = await createFileStructure(session);

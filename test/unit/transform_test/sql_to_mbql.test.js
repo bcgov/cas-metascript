@@ -4,7 +4,7 @@ const util = require('util');
 describe('sql -> mbql format conversion tests', () => {
   const question = {
     sql: '',
-    dataset_query:{}
+    dataset_query:{query:{}}
   }
 
   test('test conversion of a single table query', () => {
@@ -87,5 +87,57 @@ describe('sql -> mbql format conversion tests', () => {
       "order-by": [['DESC', 'cde']],
       "source_table": ["fuel"]}
     );
+  });
+});
+
+describe('sql -> mbql comparison operator conversion tests', () => {
+  const question = {
+    sql: '',
+    dataset_query:{query:{}}
+  };
+
+  test('sql operator <> gets parsed to != when converted to mbql', () => {
+    question.sql = 'select fuel.abc from ggircs.fuel where fuel.abc <> 5';
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["abc"]],
+      "fields": [],
+      "filter": ['!=', 'abc', 5],
+      "foreign_columns": [],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
+  });
+
+  test('sql operator IS NULL gets parsed to is-null when converted to mbql', () => {
+    question.sql = 'select fuel.abc from ggircs.fuel where fuel.abc is null';
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["abc"]],
+      "fields": [],
+      "filter": ['is-null', 'abc'],
+      "foreign_columns": [],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
+  });
+
+  test('sql operator IS NOT NULL gets parsed to not-null when converted to mbql', () => {
+    question.sql = 'select fuel.abc from ggircs.fuel where fuel.abc IS NOT NULL';
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["abc"]],
+      "fields": [],
+      "filter": ['not-null', 'abc'],
+      "foreign_columns": [],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
   });
 });
