@@ -1,4 +1,5 @@
 const util = require('util');
+const getSession = require('./api_calls/get_session');
 const sqlToMbql = require('./transform/sql_to_mbql_adv');
 const mapSQLValuesToID = require('./transform/mapSQLValuesToID');
 const removeDimensionFields = require('./transform/remove_dimension_fields');
@@ -27,8 +28,8 @@ A space-separated list of questions to save/edit`;
  */
 async function save_question_to_metabase(questionSet) {
   try {
-    // const session = await getSession();
-    const session = JSON.parse(process.env.SESSION);
+    const session = await getSession();
+    // const session = JSON.parse(process.env.SESSION);
     const flags = [];
     // If no args (flags / questionset throw error)
     if (questionSet[0] === undefined) {

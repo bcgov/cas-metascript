@@ -17,8 +17,8 @@ require('dotenv').config();
  */
 async function saveDashboardsToMetabase(flag) {
   try {
-    // const session = await getSession();
-    const session = JSON.parse(process.env.SESSION);
+    const session = await getSession();
+    // const session = JSON.parse(process.env.SESSION);
     const database_id = process.env.DATABASE_ID;
     // Error handling for incorrect flag arguments (--save or --edit)
     if (flag === undefined || (flag !== '--save' && flag !== '--edit')) {
@@ -30,7 +30,7 @@ async function saveDashboardsToMetabase(flag) {
     // Get all cards from metabase
     const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: database_id});
     // The ID's of the dashboards to refresh
-    const activeDashboardIDs = [79];//11, 18, 20, 25];
+    const activeDashboardIDs = [1];//11, 18, 20, 25];
     // The dashboard objects to refresh
     const activeDashboards = [];
     const saveEditFlag = flag;
@@ -75,7 +75,7 @@ async function saveDashboardsToMetabase(flag) {
         dashboardCards.forEach(dbCard => {
           // collection_id should be removed in production, this is just because I've saved all new cards to my personal collection to not mess with
           // items already on dev
-          if (card.collection_id === 44 && card.name === dbCard.cardId) {
+          if (card.name === dbCard.cardId) {
             dbCard.cardId = card.id;
           }
         });

@@ -19,8 +19,7 @@ async function postDashboard(apiEndpoint, payload, method, session) {
       name: `dev_id_dashboard_${payload.id}`,
       description: originalDash.description,
       parameters: originalDash.parameters,
-      // collection_id set to 43 for debugging so that new dashboards are posted in my recreated dashboards collection
-      collection_id: 43,
+      collection_id: originalDash.collection_id,
     }
   }
   else if (method === 'PUT') {
