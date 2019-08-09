@@ -155,9 +155,9 @@ const sql_to_mbql = (question) => {
       }
       else if (obj.operator === 'LIKE') {
         loggedOperator = obj.operator;
-        startsWithRegex = /\w%/;
-        endsWithRegex = /\w%/;
-        containsRegex = /%\w%/;
+        startsWithRegex = /^\w+%/;
+        endsWithRegex = /%\w+$/;
+        containsRegex = /%\w+%/;
         if (startsWithRegex.test(obj.right.value)) { obj.operator = 'starts-with' }
         else if (endsWithRegex.test(obj.right.value)) { obj.operator = 'ends-with' }
         else if (containsRegex.test(obj.right.value) && lastOperator === 'NOT') { obj.operator = 'not-contains' }
