@@ -241,7 +241,7 @@ const sql_to_mbql = (question) => {
         }
 
         else if (obj.type === 'string' && obj.table !== mbql_query.source_table[0]) {
-          array = array[1];
+
           const likeClauseValue = array[array.length-1];
           if (typeof likeClauseValue === 'object') {
             array[array.length-1] = obj.value

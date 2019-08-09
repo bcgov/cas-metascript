@@ -140,4 +140,36 @@ describe('sql -> mbql comparison operator conversion tests', () => {
       "source_table": ["fuel"]}
     )
   });
+
+  test('sql operator pattern [table.column LIKE %\w%] (case sensitive) gets parsed to contains when converted to mbql', () => {
+    question.sql = "select fuel.abc from ggircs.fuel where fuel.abc like '%word%'";
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["abc"]],
+      "fields": [],
+      "filter": ['contains', 'abc', '%word%', {'case-sensitive': true}],
+      "foreign_columns": [],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
+  });
+
+  test('sql operator pattern [table.column LIKE %\w] (case sensitive) gets parsed to ends-with when converted to mbql', () => {
+    question.sql = "select fuel.abc from ggircs.fuel where (fuel.abc like '%word')";
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["abc"]],
+      "fields": [],
+      "filter": ['ends-with', 'abc', '%word', {'case-sensitive': true}],
+      "foreign_columns": [],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
+  });
+
+  // TODO: NOT abc LIKE %word% is broken for some reason
 });
