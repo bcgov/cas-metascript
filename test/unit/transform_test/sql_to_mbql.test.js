@@ -275,4 +275,139 @@ describe('sql -> mbql comparison operator conversion tests', () => {
       "source_table": ["fuel"]}
     )
   });
+
+  test('sql operator pattern [lower(table.column LIKE %\w%)] (case insensitive) gets parsed to contains when converted to mbql', () => {
+    question.sql = "select fuel.abc from ggircs.fuel where lower(fuel.abc) like '%word%'";
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["abc"]],
+      "fields": [],
+      "filter": ['contains', 'abc', 'word', {'case-sensitive': false}],
+      "foreign_columns": [],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
+  });
+
+  test('sql operator pattern [NOT table.column LIKE %\w%] (case insensitive) gets parsed to ends-with when converted to mbql', () => {
+    question.sql = "select fuel.abc from ggircs.fuel where lower(fuel.abc) NOT like '%word%'";
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["abc"]],
+      "fields": [],
+      "filter": ['not-contains', 'abc', 'word', {'case-sensitive': false}],
+      "foreign_columns": [],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
+  });
+
+  test('sql operator pattern [table.column NOT LIKE %\w%] (case insensitive) gets parsed to ends-with when converted to mbql', () => {
+    question.sql = "select fuel.abc from ggircs.fuel where (lower(fuel.abc) NOT like '%word%')";
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["abc"]],
+      "fields": [],
+      "filter": ['not-contains', 'abc', 'word', {'case-sensitive': false}],
+      "foreign_columns": [],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
+  });
+
+  test('sql operator pattern [table.column LIKE %\w] (case insensitive) gets parsed to ends-with when converted to mbql', () => {
+    question.sql = "select fuel.abc from ggircs.fuel where (lower(fuel.abc) like '%word')";
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["abc"]],
+      "fields": [],
+      "filter": ['ends-with', 'abc', 'word', {'case-sensitive': false}],
+      "foreign_columns": [],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
+  });
+
+  test('sql operator pattern [table.column LIKE \w%] (case insensitive) gets parsed to starts-with when converted to mbql', () => {
+    question.sql = "select fuel.abc from ggircs.fuel where (lower(fuel.abc) like 'word%')";
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["abc"]],
+      "fields": [],
+      "filter": ['starts-with', 'abc', 'word', {'case-sensitive': false}],
+      "foreign_columns": [],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
+  });
+
+  test('sql operator pattern [foreign_table.column LIKE %\w%] (case insensitive) gets parsed to contains when converted to mbql', () => {
+    question.sql = "select fuel.abc from ggircs.fuel left join ggircs.facility on fuel.facility_id = facility.id where lower(facility.cde) like '%word%'";
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["facility_id"], ["cde"]],
+      "fields": [],
+      "filter": ['contains', [['fk->', 'facility_id', 'facility.cde'], 'word', {'case-sensitive': false}]],
+      "foreign_columns": [['facility', 'cde']],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
+  });
+
+  test('sql operator pattern [NOT foreign_table.column LIKE %\w%] (case insensitive) gets parsed to not-contains when converted to mbql', () => {
+    question.sql = "select fuel.abc from ggircs.fuel left join ggircs.facility on fuel.facility_id = facility.id where not lower(facility.cde) like '%word%'";
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["facility_id"], ["cde"]],
+      "fields": [],
+      "filter": ['not-contains', [['fk->', 'facility_id', 'facility.cde'], 'word', {'case-sensitive': false}]],
+      "foreign_columns": [['facility', 'cde']],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
+  });
+
+  test('sql operator pattern [foreign_table.column LIKE %\w] (case insensitive) gets parsed to ends-with when converted to mbql', () => {
+    question.sql = "select fuel.abc from ggircs.fuel left join ggircs.facility on fuel.facility_id = facility.id where not lower(facility.cde) like '%word'";
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["facility_id"], ["cde"]],
+      "fields": [],
+      "filter": ['ends-with', [['fk->', 'facility_id', 'facility.cde'], 'word', {'case-sensitive': false}]],
+      "foreign_columns": [['facility', 'cde']],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
+  });
+
+  test('sql operator pattern [foreign_table.column LIKE \w%] (case insensitive) gets parsed to starts-with when converted to mbql', () => {
+    question.sql = "select fuel.abc from ggircs.fuel left join ggircs.facility on fuel.facility_id = facility.id where not lower(facility.cde) like 'word%'";
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["facility_id"], ["cde"]],
+      "fields": [],
+      "filter": ['starts-with', [['fk->', 'facility_id', 'facility.cde'], 'word', {'case-sensitive': false}]],
+      "foreign_columns": [['facility', 'cde']],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
+  });
 });

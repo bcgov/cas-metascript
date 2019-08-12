@@ -238,10 +238,15 @@ const sql_to_mbql = (question) => {
 
         else if (obj.type === 'string') {
           const likeClauseValue = array[array.length-1];
-          if (typeof likeClauseValue === 'object') {
+          if (Array.isArray(likeClauseValue)) {
             array = array[array.length-1]
             const caseSensitivity = array[array.length-1]
             array[array.length-1] = obj.value.replace(/%/g, '');
+            array.push(caseSensitivity);
+          }
+          else if (typeof likeClauseValue === 'object'){
+            const caseSensitivity = array[array.length-1];
+            array[array.length-1] = obj.value.replace(/%/g, '')
             array.push(caseSensitivity);
           }
           else {
