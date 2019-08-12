@@ -9,7 +9,7 @@ describe('getSession() tests', () => {
     const restore = mockedEnv({
       METABASE_USERNAME: 'bad@credentials.is',
       METABASE_PASSWORD: 'accessdenied',
-      URL: process.env.TEST_URL
+      URL: process.env.URL
     });
 
     const { completeRecording, assertScopesFinished } = await record("get_session_with_bad_credentials");
@@ -26,7 +26,7 @@ describe('getSession() tests', () => {
     const restore = mockedEnv ({
       METABASE_USERNAME: 'good@user.is',
       METABASE_PASSWORD: 'goodpassword',
-      URL: process.env.TEST_URL
+      URL: process.env.URL
     });
 
     const  { completeRecording, assertScopesFinished } = await record('get_session_with_good_credentials');
