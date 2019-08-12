@@ -27,7 +27,7 @@ jobs:
       # run tests!
       - run:
           name: Run tests
-          command: jest --collectCoverage=true
+          command: yarn test
           environment:
             TEST_URL: https://cas-metascript-wksv3k-tools.pathfinder.gov.bc.ca/api
       - store_artifacts:
