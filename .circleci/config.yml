@@ -27,8 +27,6 @@ jobs:
       # run tests!
       - run:
           name: Run tests
-          command: jest --ci --coverage --runInBand
+          command: jest 
           environment:
             TEST_URL: https://cas-metascript-wksv3k-tools.pathfinder.gov.bc.ca/api
-      - store_artifacts:
-          path: coverage
