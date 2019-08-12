@@ -137,6 +137,7 @@ const sql_to_mbql = (question) => {
 
   // TODO: this function is long and ugly, it could use some refactoring
   const traverseObject = (obj, array, from, lastOperator) => {
+
     // If the current object has a 'left' node then it is an operation, push the operator and traverse the left and right branches
     if (obj.hasOwnProperty('left')) {
       let loggedOperator;
@@ -150,8 +151,9 @@ const sql_to_mbql = (question) => {
       else if (obj.operator === 'IS' && obj.right.value === null) {
         obj.operator = 'is-null';
       }
-      else if (obj.operator === 'NOT') {
+      else if (obj.operator === 'NOT LIKE') {
         loggedOperator = obj.operator;
+        if (containsRegex.test(obj.right.value)) { obj.operator = 'not-contains' }
       }
       else if (obj.operator === 'LIKE') {
         loggedOperator = obj.operator;
@@ -169,6 +171,11 @@ const sql_to_mbql = (question) => {
       traverse(obj.left, array, from, lastOperator);
       traverse(obj.right, array, from, lastOperator);
     }
+    else if (obj.operator === 'NOT') {
+      lastOperator = 'NOT';
+      traverse(obj.expr, array, from, lastOperator);
+    }
+
     // If the current object has no 'left' node then it is a value, push the value
     else {
       if (obj.column && lastOperator !== 'LIKE') {
@@ -202,7 +209,7 @@ const sql_to_mbql = (question) => {
           if (!mbql_query.columns.flat().includes(obj.column)) { mbql_query.columns.push([obj.column]); }
         }
       }
-      else if (lastOperator === 'LIKE') {
+      else if (lastOperator === 'LIKE' || lastOperator === 'NOT LIKE') {
         if (obj.type === 'function' && obj.args.value[0].table === mbql_query.source_table[0]) {
           array.push(obj.args.value[0].column);
           array.push({['case-sensitive']: false});
@@ -319,6 +326,7 @@ const sql_to_mbql = (question) => {
       }
     })
   }
+    console.log(util.inspect(mbql_query.filter, false, null, true /* enable colors */));
 
   return mbql_query;
 }

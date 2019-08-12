@@ -156,6 +156,36 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
+  test('sql operator pattern [NOT table.column LIKE %\w%] (case sensitive) gets parsed to ends-with when converted to mbql', () => {
+    question.sql = "select fuel.abc from ggircs.fuel where fuel.abc NOT like '%word%'";
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["abc"]],
+      "fields": [],
+      "filter": ['not-contains', 'abc', '%word%', {'case-sensitive': true}],
+      "foreign_columns": [],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
+  });
+
+  test('sql operator pattern [table.column NOT LIKE %\w%] (case sensitive) gets parsed to ends-with when converted to mbql', () => {
+    question.sql = "select fuel.abc from ggircs.fuel where fuel.abc NOT like '%word%'";
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["abc"]],
+      "fields": [],
+      "filter": ['not-contains', 'abc', '%word%', {'case-sensitive': true}],
+      "foreign_columns": [],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
+  });
+
   test('sql operator pattern [table.column LIKE %\w] (case sensitive) gets parsed to ends-with when converted to mbql', () => {
     question.sql = "select fuel.abc from ggircs.fuel where (fuel.abc like '%word')";
     expect(sql_to_mbql(question))
@@ -165,6 +195,21 @@ describe('sql -> mbql comparison operator conversion tests', () => {
       "columns": [["abc"]],
       "fields": [],
       "filter": ['ends-with', 'abc', '%word', {'case-sensitive': true}],
+      "foreign_columns": [],
+      "order-by": [],
+      "source_table": ["fuel"]}
+    )
+  });
+
+  test('sql operator pattern [table.column LIKE \w%] (case sensitive) gets parsed to starts-with when converted to mbql', () => {
+    question.sql = "select fuel.abc from ggircs.fuel where (fuel.abc like 'word%')";
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [],
+      "breakout": [],
+      "columns": [["abc"]],
+      "fields": [],
+      "filter": ['starts-with', 'abc', 'word%', {'case-sensitive': true}],
       "foreign_columns": [],
       "order-by": [],
       "source_table": ["fuel"]}
