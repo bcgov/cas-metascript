@@ -8,7 +8,7 @@ const record = setupRecorder({ mode: 'record' });
 describe('callAPI() tests', () => {
   test('callAPI fails with a bad session id', async () => {
     restore = mockedEnv({
-      URL: process.env.TEST_URL
+      URL: process.env.URL
     });
     const session = {id: '1234'};
     const result = await callAPI(session, '/database', 'GET');
@@ -18,7 +18,7 @@ describe('callAPI() tests', () => {
 
   test('callAPI returns data with a good session id', async () => {
     restore = mockedEnv({
-      URL: process.env.TEST_URL,
+      URL: process.env.URL,
       TEST_SESSION: `{"id":"9f707921-b9a1-4dfb-ae58-b22c37137d1b"}`
     });
 
