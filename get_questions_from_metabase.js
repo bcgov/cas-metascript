@@ -12,9 +12,9 @@ require('dotenv').config();
  * @param {Array} questionSet - a list of questions to get from metabase (if null get all questions from metabase) 
  */
 async function getQuestionsFromMetabase(questionSet){
-  // const session = await getSession();
+  const session = await getSession();
   const database_id = process.env.DATABASE_ID;
-  const session = JSON.parse(process.env.SESSION);
+  // const session = JSON.parse(process.env.SESSION);
   const metabaseQuestions = [];
   console.log('Creating File Structure...')
   const collections = await createFileStructure(session);
