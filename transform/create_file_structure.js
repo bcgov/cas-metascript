@@ -45,7 +45,7 @@ async function createFileStructure(session) {
   };
   // Create the file structure (based on the collection hierarchy in metabase) that will house all the questions locally
   await Promise.all(Object.keys(collections).map(key => new Promise((resolve, reject) => {
-    mkdirp(`./metabase_questions/${unixTimestamp}/${collections[key].location}`, function (err) {
+    mkdirp(`${process.env.QUESTION_PATH}/${collections[key].location}`, function (err) {
       if (err) {
         console.error(err);
         return reject();

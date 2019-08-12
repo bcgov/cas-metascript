@@ -9,18 +9,18 @@ const util = require('util');
 const getQuestionFiles = (questionSet, flags) => {
 
   const regex = /\d+/
-  const questionFolders = fs.readdirSync('./metabase_questions');
-    const latestFolder = {
-      name: '',
-      timestamp: '0'
-    }
-    questionFolders.forEach(folder => {
-      const timestamp = folder.match(regex);
-      if (timestamp[0] > latestFolder.timestamp) {
-        latestFolder.name = folder;
-        latestFolder.timestamp = timestamp[0];
-      }
-    });
+  // const questionFolders = fs.readdirSync(process.env.QUESTION_PATH);
+    // const latestFolder = {
+    //   name: '',
+    //   timestamp: '0'
+    // }
+    // questionFolders.forEach(folder => {
+    //   const timestamp = folder.match(regex);
+    //   if (timestamp[0] > latestFolder.timestamp) {
+    //     latestFolder.name = folder;
+    //     latestFolder.timestamp = timestamp[0];
+    //   }
+    // });
 
   let data = {questions: []};
 
@@ -46,9 +46,9 @@ const getQuestionFiles = (questionSet, flags) => {
   };
 
   if (flags.includes('--all'))
-    traverseFiles(questionSet,`./metabase_questions/${latestFolder.name}`, true);
+    traverseFiles(questionSet,`${process.env.QUESTION_PATH}`, true);
   else
-    traverseFiles(questionSet,`./metabase_questions/${latestFolder.name}`, false);
+    traverseFiles(questionSet,`${process.env.QUESTION_PATH}`, false);
 
 return data;
 }
