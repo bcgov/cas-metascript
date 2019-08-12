@@ -60,7 +60,6 @@ async function getQuestionsFromMetabase(questionSet){
 
   for (let i = 0; i < metabaseQuestions.length; i++) {
     let question = metabaseQuestions[i];
-    console.log(question);
     try {
       // Scrub the sql from metabase (if the query is not native / the source table is another card)
       if (question.dataset_query.type !== 'native' && !question.dataset_query.query["source-table"].toString().match(/card.*/)) {
