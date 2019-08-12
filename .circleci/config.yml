@@ -27,6 +27,6 @@ jobs:
           name: Run tests
           command: yarn test
           environment:
-            TEST_URL: https://cas-metascript-wksv3k-tools.pathfinder.gov.bc.ca/api
+            URL: https://cas-metascript-wksv3k-tools.pathfinder.gov.bc.ca/api
       - store_artifacts:
           path: coverage
