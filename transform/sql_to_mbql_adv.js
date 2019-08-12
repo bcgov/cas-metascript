@@ -219,17 +219,6 @@ const sql_to_mbql = (question) => {
           array.push(obj.column);
           if (!mbql_query.columns.flat().includes(obj.column)) { mbql_query.columns.push([obj.column]); }
         }
-        else if (obj.type === 'string' && obj.table === mbql_query.source_table[0]) {
-          const likeClauseValue = array[array.length-1];
-          if (typeof likeClauseValue === 'object') {
-            array[array.length-1] = obj.value
-            array.push(likeClauseValue);
-          }
-          else {
-            array.push(obj.value);
-            array.push({['case-sensitive']: true});
-          }
-        }
 
         else if (obj.type === 'function' && obj.args.value[0].table !== mbql_query.source_table[0]) {
           array.push([]);
@@ -247,15 +236,16 @@ const sql_to_mbql = (question) => {
           if (!mbql_query.columns.flat().includes(obj.column)) { mbql_query.columns.push([obj.column]); }
         }
 
-        else if (obj.type === 'string' && obj.table !== mbql_query.source_table[0]) {
-
+        else if (obj.type === 'string') {
           const likeClauseValue = array[array.length-1];
           if (typeof likeClauseValue === 'object') {
-            array[array.length-1] = obj.value
-            array.push(likeClauseValue);
+            array = array[array.length-1]
+            const caseSensitivity = array[array.length-1]
+            array[array.length-1] = obj.value.replace(/%/g, '');
+            array.push(caseSensitivity);
           }
           else {
-            array.push(obj.value);
+            array.push(obj.value.replace(/%/g, ''));
             array.push({['case-sensitive']: true});
           }
         }
@@ -326,7 +316,7 @@ const sql_to_mbql = (question) => {
       }
     })
   }
-    console.log(util.inspect(mbql_query.filter, false, null, true /* enable colors */));
+    // console.log(util.inspect(mbql_query, false, null, true /* enable colors */));
 
   return mbql_query;
 }
