@@ -11,7 +11,6 @@ require('dotenv').config();
  */
 async function callAPI(session, apiEndpoint, method, body, params) {
   const url = `${process.env.URL}${apiEndpoint}`;
-
   const param = {
     headers:{
       "content-type":"application/json",

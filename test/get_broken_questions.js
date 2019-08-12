@@ -35,6 +35,6 @@ async function getBrokenQuestions() {
   catch(e) { console.error(e); }
 }
 
-getBrokenQuestions();
+// getBrokenQuestions();
 
 module.exports = getBrokenQuestions;

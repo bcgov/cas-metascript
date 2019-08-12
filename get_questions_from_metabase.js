@@ -89,4 +89,6 @@ async function getQuestionsFromMetabase(questionSet){
   }
 }
 
-getQuestionsFromMetabase(process.argv.slice(2));
+// getQuestionsFromMetabase(process.argv.slice(2));
+
+module.exports = getQuestionsFromMetabase;
