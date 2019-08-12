@@ -22,11 +22,11 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-      - run:
-          command: bash
       # run tests!
       - run:
           name: Run tests
-          command: jest 
+          command: yarn test
           environment:
             TEST_URL: https://cas-metascript-wksv3k-tools.pathfinder.gov.bc.ca/api
+      - store_artifacts:
+          path: coverage
