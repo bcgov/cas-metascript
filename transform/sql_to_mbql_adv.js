@@ -312,7 +312,7 @@ const sql_to_mbql = (question) => {
             mbql_query['order-by'].push([orderedField.type, ['fk->', `${joinTable.on.right.column}`, `${tableName.table}.${orderedField.expr.column}`]]);
             if (!mbql_query.columns.flat().includes(joinTable.on.right.column)){ mbql_query.columns.push([`${joinTable.on.right.column}`]); }
           }
-          mbql_query.foreign_columns.push([`${tableName.table}`, orderedField.expr.column])
+          mbql_query.foreign_columns.push([`${tableName.table}`, orderedField.expr.column]);
         }
         else {
           mbql_query['order-by'].push([orderedField.type, orderedField.expr.column])

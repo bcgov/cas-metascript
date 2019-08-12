@@ -20,6 +20,40 @@ describe('scrub metabase sql tests', () => {
   });
 
   describe('scrub sql tests', () => {
+    test('getScrubbedSQL gets the native sql from queryData.data.native_form path' , async () => {
+      let returnValue = {
+        data: {
+          native_form: {
+            query: 'select schema.table1.abc, schema.table1.cde from schema.table1'
+          }
+        }
+      }
+
+      callAPI.mockImplementation(() => returnValue);
+      const session = {id: 12345};
+      const scrubbedSQL = await getScrubbedSQL(question, session)
+      expect(scrubbedSQL)
+      .toEqual(
+        'select table1.abc, table1.cde from schema.table1'
+      )
+    });
+    
+    test('getScrubbedSQL gets the native sql from queryData.native path' , async () => {
+      let returnValue = {
+        native: {
+          query: 'select schema.table1.abc, schema.table1.cde from schema.table1'
+        }
+      }
+
+      callAPI.mockImplementation(() => returnValue);
+      const session = {id: 12345};
+      const scrubbedSQL = await getScrubbedSQL(question, session)
+      expect(scrubbedSQL)
+      .toEqual(
+        'select table1.abc, table1.cde from schema.table1'
+      )
+    });
+    
     test('getScrubbedSQL gets the schema name from pattern \w.\w.\w, removes it from that pattern but leaves it alone in any other pattern ' , async () => {
       const returnValue = {
         data: {

@@ -51,7 +51,7 @@ async function save_question_to_metabase(questionSet) {
       throw console.error(argumentError);
 
     let data = getQuestionFiles(questionSet, flags);
-
+    console.log(data);
     for (let i = 0; i < data.questions.length; i++) {
       let question = data.questions[i];
       question.send = {

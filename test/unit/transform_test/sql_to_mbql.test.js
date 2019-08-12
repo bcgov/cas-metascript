@@ -88,6 +88,22 @@ describe('sql -> mbql format conversion tests', () => {
       "source_table": ["fuel"]}
     );
   });
+
+  test('test conversion of a query with an group by / order by with foreign columns', () => {
+    question.sql = 'select sum(fuel.abc), fuel.cde, report.fgh from ggircs.fuel left join ggircs.report on fuel.report_id = report.id group by report.fgh order by report.fgh DESC';
+    question.dataset_query = {query:{fields:{0:[123]}}};
+    expect(sql_to_mbql(question))
+    .toStrictEqual(
+      {"aggregation": [["SUM", 'abc']],
+      "breakout": [["fk->", "report_id", "report.fgh"]],
+      "columns": [["abc"], ["cde"], ["report_id"]],
+      "fields": ["cde", ["fk->", "report_id", "report.fgh"]],
+      "filter": [],
+      "foreign_columns": [["report", "fgh"],["report", "fgh"],["report", "fgh"]],
+      "order-by": [['DESC', ['fk->', 'report_id', 'report.fgh']]],
+      "source_table": ["fuel"]}
+    );
+  });
 });
 
 describe('sql -> mbql comparison operator conversion tests', () => {
