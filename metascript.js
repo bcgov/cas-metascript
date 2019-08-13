@@ -68,86 +68,19 @@ program
   if (push.questionDirectory) {
     (async () => {
       await saveQuestionsToMetabase(push.opts())
+      const brokenQuestions = await getBrokenQuestions();
+      if (brokenQuestions.length > 0) {
+        console.log('Metabase contains broken questions:')
+        console.log(brokenQuestions)
+        console.log('exiting..');
+        console.log(pull.help());
+        process.exit(1);
+      }
     })();
   }
   else if (push.dashboardDirectory) {
-    console.log('push dashboard')
+    console.log(push.opts())
   }
 })
 
 program.parse(process.argv);
-
-// if (program.get) {
-//   if (program.question) {
-//     if (program.all) {
-//       (async () => { 
-//         try {
-//           const brokenQuestions = await getBrokenQuestions();
-//           if (brokenQuestions.length === 0 || program.ignoreBrokenQuestionCheck) {
-//             const brokenIDs = [];
-//             brokenQuestions.forEach(question => {
-//               const id = Number(question.split('').shift());
-//               brokenIDs.push(id);
-//             });
-//             await getQuestionsFromMetabase([], brokenIDs);
-//           }
-//           else {
-//             console.log('Metabase contains broken questions:')
-//             console.log(brokenQuestions)
-//             process.exit(1);
-//           }
-//         } catch(e) { console.log(e); } 
-//       })();
-//       console.log('get question all');
-//     }
-//     else if (program.entityList) {
-//       console.log('get question list')
-//     }
-//   }
-//   else if (program.dashboard) {
-//     if (program.all) {
-//       console.log('get dashboard all')
-//     }
-//     else if (program.entityList) {
-//       console.log('get dashboard list')
-//     }
-//   }
-// }
-// else if (program.post) {
-//   if (program.question) {
-//     if (program.all) {
-//       if (program.save) {
-//         console.log('post question all save')
-//       }
-//       else if (program.edit) {
-//         console.log('post question all edit')
-//       }
-//     }
-//     else if (program.entityList) {
-//       if (program.save) {
-//         console.log('post question list save')
-//       }
-//       else if (program.edit) {
-//         console.log('post question list edit')
-//       }
-//     }
-//   }
-//   if (program.dashboard) {
-//     if (program.all) {
-//       if (program.save) {
-//         console.log('post dashboard all save')
-//       }
-//       else if (program.edit) {
-//         console.log('post dashboard all edit')
-//       }
-//     }
-//     else if (program.entityList) {
-//       if (program.save) {
-//         console.log('post dashboard list save')
-//       }
-//       else if (program.edit) {
-//         console.log('post dashboard list edit')
-//       }
-//     }
-//   }
-// }

@@ -17,8 +17,8 @@ require('dotenv').config();
  */
 async function saveDashboardsToMetabase(flag) {
   try {
-    const session = await getSession();
-    // const session = JSON.parse(process.env.SESSION);
+    // const session = await getSession();
+    const session = JSON.parse(process.env.SESSION);
     const database_id = process.env.DATABASE_ID;
     // Error handling for incorrect flag arguments (--save or --edit)
     if (flag === undefined || (flag !== '--save' && flag !== '--edit')) {
