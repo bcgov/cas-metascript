@@ -15,36 +15,27 @@ require('dotenv').config();
  * Function saveDashboardsToMetabase re-saves dashboards to metabase with new/edited questions
  * @param {String} flag - --save saves a new version of the dashboard with a new metabase ID --edit edits the questions in the current dashboard
  */
-async function saveDashboardsToMetabase(flag) {
+async function saveDashboardsToMetabase(args) {
   try {
     // const session = await getSession();
     const session = JSON.parse(process.env.SESSION);
-    const database_id = process.env.DATABASE_ID;
-    // Error handling for incorrect flag arguments (--save or --edit)
-    if (flag === undefined || (flag !== '--save' && flag !== '--edit')) {
-      throw console.error('Invalid or missing argument. Command must include --save(save a dashboard with a new id) or --edit(save an updated dashboard & keep current id)')
-    }
+    const database_id = args.databaseId;
 
     // Get all dashboards from metabasebase
     const allDashboards = await callAPI(session, '/dashboard', 'GET', null, {database: database_id});
     // Get all cards from metabase
     const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: database_id});
     // The ID's of the dashboards to refresh
-    const activeDashboardIDs = [1];//11, 18, 20, 25];
+    const activeDashboardIDs = args.entityList;//11, 18, 20, 25];
     // The dashboard objects to refresh
     const activeDashboards = [];
-    const saveEditFlag = flag;
     // Iterate over the list of activeDashboardIDs and push the corresponding dashboard object to activeDashboards
     allDashboards.forEach(dashboard => {
-      if (activeDashboardIDs.includes(dashboard.id))
+      if (activeDashboardIDs.length === 0 || activeDashboardIDs.includes(dashboard.id))
         activeDashboards.push(dashboard);
     });
-    /**
-     * Get the individual dashboard object.
-     * All the activeDashboard stuff looks like redundant code & it very possibly is.
-     * It may just be useful for dev debugging. In which case this loop will iterate over allDashboards rather than activeDashboards
-     * and the activeDashboard stuff can be removed.
-     */
+
+    // Get the individual dashboard object.
     for (let i = 0; i < activeDashboards.length; i++) {
       const dashboard = await callAPI(session, `/dashboard/${activeDashboards[i].id}`, 'GET', null, {database: database_id});
       let dashboardCards = [];
@@ -53,28 +44,26 @@ async function saveDashboardsToMetabase(flag) {
         let cardId;
         // Some cards have a `null` id. These are virtual cards that are created in the dashboard (like notes we've added)
         if (dbCard.card_id !== null)
-          // Setting the cardId parameter to the card's name for comparison later
+          // Set the cardId parameter to the card's name for comparison later
           cardId = dbCard.card.name
         else
           cardId = null;
 
-          dashboardCards.push({
-            sizeX: dbCard.sizeX,
-            sizeY: dbCard.sizeY,
-            col: dbCard.col,
-            row: dbCard.row,
-            parameter_mappings: dbCard.parameter_mappings,
-            series: dbCard.series,
-            visualization_settings: dbCard.visualization_settings,
-            cardId
-          });
+        dashboardCards.push({
+          sizeX: dbCard.sizeX,
+          sizeY: dbCard.sizeY,
+          col: dbCard.col,
+          row: dbCard.row,
+          parameter_mappings: dbCard.parameter_mappings,
+          series: dbCard.series,
+          visualization_settings: dbCard.visualization_settings,
+          cardId
+        });
       })
 
       // Check the name of the cards currently in metabase against the name of the card set to cardId (The card id may have changed but name will be the same)
       allDatabaseCards.forEach(card => {
         dashboardCards.forEach(dbCard => {
-          // collection_id should be removed in production, this is just because I've saved all new cards to my personal collection to not mess with
-          // items already on dev
           if (card.name === dbCard.cardId) {
             dbCard.cardId = card.id;
           }
@@ -83,7 +72,7 @@ async function saveDashboardsToMetabase(flag) {
 
       // Save new dashboard to metabase if --save flag is set
       let newDashboardID = '';
-      if (saveEditFlag === '--save') {
+      if (args.save) {
         const newDashboardName = await saveDashboard(`/dashboard/`, dashboard, 'POST', session);
         const allDashboards = await callAPI(session, '/dashboard', 'GET', null, {database: database_id});
         // Get the ID of the newly saved dashboard
@@ -100,12 +89,12 @@ async function saveDashboardsToMetabase(flag) {
           });
         }
         // Save each question to the new dashboard
-        if (saveEditFlag === '--save') {
+        if (args.save) {
           await callAPI(session, `/dashboard/${newDashboardID}/cards`, 'POST', dashboardCards[j])
         }
       }
       // update the array of questions for the dashboard being edited
-      if (saveEditFlag === '--edit') {
+      if (args.edit) {
         await saveDashboard(`/dashboard/${dashboard.id}/cards`, {id: dashboard.id, dashboardCards}, 'PUT', session)
       }
       console.log(`dashboard ${dashboard.id} recreation complete`);
@@ -115,5 +104,4 @@ async function saveDashboardsToMetabase(flag) {
   // console.log(util.inspect(dashboard, false, null, true));
 }
 
-// saveDashboardsToMetabase(process.argv[2]);
 module.exports = saveDashboardsToMetabase;

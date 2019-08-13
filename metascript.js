@@ -79,7 +79,7 @@ program
     })();
   }
   else if (push.dashboardDirectory) {
-    console.log(push.opts())
+    (async () => { await saveDashboardsToMetabase(push.opts()) })();
   }
 })
 
