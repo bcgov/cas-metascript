@@ -6,24 +6,12 @@ const util = require('util');
  * @param {Array} questionSet - a list of questions to get
  * @param {Array} flags - The cmd line flags (if --all is set get all questions from the root directory down)
  */
-const getQuestionFiles = (questionSet, flags) => {
+const getQuestionFiles = (args) => {
 
-  const regex = /\d+/
-  // const questionFolders = fs.readdirSync(process.env.QUESTION_PATH);
-    // const latestFolder = {
-    //   name: '',
-    //   timestamp: '0'
-    // }
-    // questionFolders.forEach(folder => {
-    //   const timestamp = folder.match(regex);
-    //   if (timestamp[0] > latestFolder.timestamp) {
-    //     latestFolder.name = folder;
-    //     latestFolder.timestamp = timestamp[0];
-    //   }
-    // });
-
+  const regex = /^\d+/;
   let data = {questions: []};
-
+  const questionSet = args.entityList;
+  const allFlag = args.entityList.length === 0 ? true : false;
   const traverseFiles = function(questionSet, dir, allFlag) {
 
       // list files in directory and loop through
@@ -38,19 +26,15 @@ const getQuestionFiles = (questionSet, flags) => {
           }
           // file is not a directory
           const match = file.match(regex);
-          if (allFlag)
+          if (allFlag && file.match(regex))
             data.questions.push(JSON.parse(fs.readFileSync(fPath)))
-          else if (questionSet.includes(match[0]))
+          else if (file.match(regex) && questionSet.includes(match[0]))
             data.questions.push(JSON.parse(fs.readFileSync(fPath)))
       });
   };
 
-  if (flags.includes('--all'))
-    traverseFiles(questionSet,`${process.env.QUESTION_PATH}`, true);
-  else
-    traverseFiles(questionSet,`${process.env.QUESTION_PATH}`, false);
-
-return data;
+  traverseFiles(questionSet,`${args.questionDirectory}`, allFlag);
+  return data;
 }
 
 module.exports = getQuestionFiles;

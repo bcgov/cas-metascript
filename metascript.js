@@ -3,25 +3,12 @@
 const getBrokenQuestions = require('./test/get_broken_questions');
 const getQuestionsFromMetabase = require('./get_questions_from_metabase');
 const getDashboardsFromMetabase = require('./get_dashboards_from_metabase');
-// const saveQuestionsToMetabase = require('./save_questions_to_metabase');
-// const saveDashboardsToMetabase = require('./save_dashboards_to_metabase');
+const saveQuestionsToMetabase = require('./save_questions_to_metabase');
+const saveDashboardsToMetabase = require('./save_dashboards_to_metabase');
 
 const commander = require('commander');
 const program = new commander.Command();
 program.version('0.0.1');
-
-// program
-// .option('-D, --debug', 'show options')
-// .option('-g, --get <destination>', 'pull entities from metabase & save to destination folder')
-// .option('-p, --post', 'push entities to metabase')
-// .option('-q, --question', 'pull / push questions')
-// .option('-d, --dashboard', 'pull / push dashboards')
-// .option('-s, --save', 'save new instances of the entities to metabase (new metabase IDs)')
-// .option('-e, --edit', 'save edited instances of the entities in place (keep current metabase IDs)')
-// .option('-a, --all', 'pull / push all questions / dashboards')
-// .option('-l, --entity-list <list>', 'pull / push a set of questions / dashboards')
-// .option('-B, --ignore-broken-question-check', 'ignores the broken question check and proceeds anyway')
-
 
 // Add errors for conflicting options here
 
@@ -68,8 +55,9 @@ program
 .command('push')
 .description('push entities to Metabase')
 .option('-D, --debug', 'show options')
-.option('-q, --question', 'push questions to metabase')
-.option('-d, --dashboard', 'push dashboards to metabase')
+.option('-i, --database-id <id>', 'Metabase database id')
+.option('-q, --questionDirectory <dir>', 'push questions to metabase from directory')
+.option('-d, --dashboardDirectory <dir>', 'push dashboards to metabase from directory')
 .option('-l, --entity-list <list>', 'push a set of questions / dashboards (default: [] pushes all)', [])
 .option('-s, --save', 'save new instances of the entities to metabase (new metabase IDs)')
 .option('-e, --edit', 'save edited instances of the entities in place (keep current metabase IDs)')
@@ -77,10 +65,12 @@ program
 .action((push) => {
   if (push.debug) { console.log(push.opts()); }
 
-  if (push.question) {
-    console.log('push question')
+  if (push.questionDirectory) {
+    (async () => {
+      await saveQuestionsToMetabase(push.opts())
+    })();
   }
-  else if (push.dashboard) {
+  else if (push.dashboardDirectory) {
     console.log('push dashboard')
   }
 })

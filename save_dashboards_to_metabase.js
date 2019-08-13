@@ -115,4 +115,5 @@ async function saveDashboardsToMetabase(flag) {
   // console.log(util.inspect(dashboard, false, null, true));
 }
 
-saveDashboardsToMetabase(process.argv[2]);
+// saveDashboardsToMetabase(process.argv[2]);
+module.exports = saveDashboardsToMetabase;
