@@ -9,8 +9,8 @@ require('dotenv').config();
  * @param {object} session - The session for the logged in user, contains a session id to be passed in when calling the api 
  * @returns {object} collections - the collections object is returned to be used when writing the questions to disk
  */
-async function createFileStructure(session) {
-  const database_id = process.env.DATABASE_ID;
+async function createFileStructure(args, session) {
+  const database_id = args.databaseId;
   const unixTimestamp = Date.now();
   // information about the collection is stored in this object to be returned and used later when writing to disk
   const collections = {};
@@ -45,7 +45,7 @@ async function createFileStructure(session) {
   };
   // Create the file structure (based on the collection hierarchy in metabase) that will house all the questions locally
   await Promise.all(Object.keys(collections).map(key => new Promise((resolve, reject) => {
-    mkdirp(`${process.env.QUESTION_PATH}/${collections[key].location}`, function (err) {
+    mkdirp(`${args.questionDestination}/${collections[key].location}`, function (err) {
       if (err) {
         console.error(err);
         return reject();

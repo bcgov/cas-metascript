@@ -22,15 +22,14 @@ async function getBrokenQuestions() {
         brokenCards.push(`${allDatabaseCards[i].id}_${allDatabaseCards[i].name}`);
       }
     }
-    const noErrorFace = String.fromCodePoint(0x1F603);
-    if (brokenCards.length === 0) {
-      console.log(`No Card Errors ${noErrorFace}`);
-      process.exit(0);
-    }
-    else {
-      console.log(`Broken Cards (ID_Name): ${brokenCards}`);
-      process.exit(1);
-    }
+    // const noErrorFace = String.fromCodePoint(0x1F603);
+    // if (brokenCards.length === 0) {
+    //   console.log(`No Card Errors ${noErrorFace}`);
+    // }
+    // else {
+    //   console.log(`Broken Cards (ID_Name): ${brokenCards}`);
+    // }
+    return brokenCards;
   }
   catch(e) { console.error(e); }
 }
