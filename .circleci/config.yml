@@ -29,5 +29,6 @@ jobs:
           environment:
             URL: https://cas-metascript-wksv3k-tools.pathfinder.gov.bc.ca/api
             QUESTION_PATH: ./test_questions
+            DATABASE_ID: 1
       - store_artifacts:
           path: coverage
