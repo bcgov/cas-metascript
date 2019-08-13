@@ -10,8 +10,8 @@ require('dotenv').config();
  */
 async function getBrokenQuestions() {
   try {
-    const session = await getSession();
-    // const session = JSON.parse(process.env.SESSION);
+    // const session = await getSession();
+    const session = JSON.parse(process.env.SESSION);
     const database_id = process.env.DATABASE_ID;
     const brokenCards = [];
     const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: database_id});

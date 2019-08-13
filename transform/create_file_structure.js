@@ -11,7 +11,7 @@ require('dotenv').config();
  */
 async function createFileStructure(args, session) {
   const database_id = args.databaseId;
-  const unixTimestamp = Date.now();
+  const model = (args.questionDestination) ? 'card' : 'dashboard'
   // information about the collection is stored in this object to be returned and used later when writing to disk
   const collections = {};
   // Get all the collections
@@ -38,7 +38,7 @@ async function createFileStructure(args, session) {
     }
     // Push the id of each card in the collection to the cards array inside the collections object
     collectionItems.forEach(item => {
-      if (item.model === 'card') {
+      if (item.model === model) {
         collections[collectionData[i].id].cards.push(item.id);
       }
     });
@@ -53,8 +53,7 @@ async function createFileStructure(args, session) {
       resolve();
     })
   })));
-  // Add the timestamp (for debugging, to be removed)
-  collections.unixTimestamp = unixTimestamp;
+
   return collections;
 }
 

@@ -2,6 +2,7 @@
 
 const getBrokenQuestions = require('./test/get_broken_questions');
 const getQuestionsFromMetabase = require('./get_questions_from_metabase');
+const getDashboardsFromMetabase = require('./get_dashboards_from_metabase');
 // const saveQuestionsToMetabase = require('./save_questions_to_metabase');
 // const saveDashboardsToMetabase = require('./save_dashboards_to_metabase');
 
@@ -59,7 +60,7 @@ program
     })();
   }
   else if (pull.dashboardDestination) {
-    console.log('get dashboard');
+    (async () => { await getDashboardsFromMetabase(pull.opts()) })();
   }
 });
 
