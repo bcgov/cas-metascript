@@ -124,4 +124,19 @@ program
   }
 })
 
+program
+.command('get-broken-questions')
+.action(() => {
+  (async () => {
+    const broken = await getBrokenQuestions()
+    if (broken.length === 0) {
+      console.log('no broken questions')
+      process.exit(0);
+    } else {
+      console.log('Broken questions: [metabaseID_questionName]')
+      console.log(broken);
+      process.exit(1);
+    }
+  })();
+})
 program.parse(process.argv);
