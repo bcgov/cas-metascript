@@ -44,7 +44,7 @@ program
   if (pull.questionDestination) {
     (async () => { 
       try {
-        const brokenQuestions = await getBrokenQuestions();
+        const brokenQuestions = await getBrokenQuestions(pull.databaseId);
         if (brokenQuestions.length === 0 || pull.ignoreBrokenQuestionCheck) {
           const brokenIDs = [];
           brokenQuestions.forEach(question => {
@@ -109,7 +109,7 @@ program
   if (push.questionDirectory) {
     (async () => {
       await saveQuestionsToMetabase(push.opts())
-      const brokenQuestions = await getBrokenQuestions();
+      const brokenQuestions = await getBrokenQuestions(push.databaseId);
       if (brokenQuestions.length > 0) {
         console.log('Metabase contains broken questions:')
         console.log(brokenQuestions)
@@ -126,9 +126,10 @@ program
 
 program
 .command('get-broken-questions')
-.action(() => {
+.option('-i <id>, --database-id', 'Metabase database id')
+.action((broken) => {
   (async () => {
-    const broken = await getBrokenQuestions()
+    const broken = await getBrokenQuestions(broken.databaseId)
     if (broken.length === 0) {
       console.log('no broken questions')
       process.exit(0);

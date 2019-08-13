@@ -11,7 +11,7 @@ describe('getQuestionsFromMetabase Integration', () => {
     getSession.mockImplementation(() => {id: 12345})
     callAPI.mockImplementationOnce(() => [{id: 1, name:'broken'}]);
     callAPI.mockImplementation(() => qdata = {error: 'error'});
-    const broken = await getBrokenQuestions();
+    const broken = await getBrokenQuestions(1);
     expect(broken).toEqual(['1_broken'])
   });
 
@@ -19,7 +19,7 @@ describe('getQuestionsFromMetabase Integration', () => {
     getSession.mockImplementation(() => {id: 12345})
     callAPI.mockImplementationOnce(() => [{id: 1, name:'not_broken'}]);
     callAPI.mockImplementation(() => qdata = {data: 'data'});
-    const broken = await getBrokenQuestions();
+    const broken = await getBrokenQuestions(1);
     expect(broken).toEqual([]);
   });
 });
