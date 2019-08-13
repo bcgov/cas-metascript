@@ -28,5 +28,6 @@ jobs:
           command: yarn test
           environment:
             URL: https://cas-metascript-wksv3k-tools.pathfinder.gov.bc.ca/api
+            QUESTION_PATH: ./test_questions
       - store_artifacts:
           path: coverage
