@@ -17,8 +17,18 @@ require('dotenv').config();
  */
 async function saveDashboardsToMetabase(args) {
   try {
-    // const session = await getSession();
-    const session = JSON.parse(process.env.SESSION);
+    let session;
+    if (process.env.CIRCLE_TEST_ENV) {
+      let string = process.env.CIRCLE_TEST_SESSION;
+      const positions = [40,4,3,1];
+      positions.forEach(position => {
+        string = [string.slice(0, position), '"', string.slice(position)].join('');
+      });
+      session = JSON.parse(string);
+    } else if (process.env.NODE_ENV === 'test')
+        session = JSON.parse(process.env.TEST_SESSION);
+      else
+        session = await getSession();
     const database_id = args.databaseId;
 
     // Get all dashboards from metabasebase

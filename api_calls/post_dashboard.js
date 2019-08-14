@@ -16,7 +16,7 @@ async function postDashboard(apiEndpoint, payload, method, session) {
   if (method === 'POST') {
    dashboardToSend ={
       // set name to show the dashboard id this dashboard was created from for debugging
-      name: `dev_id_dashboard_${payload.id}`,
+      name: originalDash.name,
       description: originalDash.description,
       parameters: originalDash.parameters,
       collection_id: originalDash.collection_id,
