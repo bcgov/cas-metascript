@@ -12,7 +12,7 @@ require('dotenv').config();
  * @param {Array} questionSet - a list of questions to get from metabase (if null get all questions from metabase) 
  */
 async function getQuestionsFromMetabase(args, brokenIDs){
-  const session = process.env.TEST_ENV ? process.env.SESSION : await getSession();
+  const session = process.env.TEST_ENV ? process.env.TEST_ENV_SESSION : await getSession();
   const database_id = args.databaseId;
   const questionSet = args.entityList;
   // const session = JSON.parse(process.env.SESSION);
