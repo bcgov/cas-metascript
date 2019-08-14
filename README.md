@@ -5,7 +5,7 @@ Metascript
 # Metabase Question & Dashboard automation script
 Metascript is a tool that helps to keep questions and dashboards on metabase from breaking on an update to the underlying data structure.
 
-##Dependencies
+## Dependencies
 - commander
 - dotenv
 - mkdirp
@@ -13,7 +13,7 @@ Metascript is a tool that helps to keep questions and dashboards on metabase fro
 - node-sql-parser
 - request
 
-##Usage
+## Usage
 - See the .env.example for how to set up the environment for your Metabase instance.
 
 ### Pull from Metabase
