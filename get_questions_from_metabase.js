@@ -27,7 +27,6 @@ async function getQuestionsFromMetabase(args, brokenIDs){
 
   const database_id = args.databaseId;
   const questionSet = args.entityList;
-  session = (process.env.NODE_ENV === 'test') ? JSON.parse(process.env.SESSION) : session;
   const metabaseQuestions = [];
   console.log('Creating File Structure...')
   const collections = await createFileStructure(args, session);
