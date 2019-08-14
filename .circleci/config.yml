@@ -9,8 +9,12 @@ jobs:
     steps:
       - checkout
 
-      - run: "export TEST_ENV=`echo $CIRCLE_TEST`"
-      - run: "export TEST_ENV_SESSION=`echo $CIRCLE_METABASE_SESSION`"
+      - run:
+          name: "Setup ENV variables" 
+        command: | 
+          echo "export TEST_ENV=`${CIRCLE_TEST}`" >> $BASH_ENV
+        command: | 
+          echo "export TEST_ENV_SESSION=`${CIRCLE_METABASE_SESSION}`" >> $BASH_ENV
 
       # Download and cache dependencies
       - restore_cache:
@@ -32,8 +36,6 @@ jobs:
             URL: https://cas-metascript-wksv3k-tools.pathfinder.gov.bc.ca/api
             QUESTION_PATH: ./test_questions
             DATABASE_ID: 1
-            $CIRCLE_TEST
-            $CIRCLE_METABASE_SESSION
           command: yarn test
 
       - store_artifacts:
