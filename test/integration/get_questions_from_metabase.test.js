@@ -11,7 +11,7 @@ test('placeholder', () => {
 
 const directory = path.join(__dirname, 'test_metabase_directory');
 
-afterAll(() => rmdir(directory, error => {}));
+afterAll(() => rmdir(directory, error => {console.log(error)}));
 
 describe('getQuestionsFromMetabase Integration', () => {
   test('getQuestionsFromMetabase creates a folder to house the questions' , async () => {
