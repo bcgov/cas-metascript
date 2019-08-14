@@ -28,9 +28,7 @@ jobs:
           command: yarn test
           environment:
             URL: https://cas-metascript-wksv3k-tools.pathfinder.gov.bc.ca/api,
-            TEST_ENV_SESSION: "{'id':'9f707921-b9a1-4dfb-ae58-b22c37137d1b'}"
             QUESTION_PATH: ./test_questions
             DATABASE_ID: 1,
-            TEST_ENV: true
       - store_artifacts:
           path: coverage
