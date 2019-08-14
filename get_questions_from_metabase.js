@@ -13,7 +13,7 @@ require('dotenv').config();
  */
 async function getQuestionsFromMetabase(args, brokenIDs){
   console.log(process.env.TEST_ENV_SESSION);
-  const session = (process.env.TEST_ENV === true) ? process.env.TEST_ENV_SESSION : await getSession();
+  const session = (process.env.CIRCLE_TEST === true) ? process.env.CIRCLE_METABASE_SESSION : await getSession();
   const database_id = args.databaseId;
   const questionSet = args.entityList;
   // const session = JSON.parse(process.env.SESSION);

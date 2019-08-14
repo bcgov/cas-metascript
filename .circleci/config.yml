@@ -32,8 +32,8 @@ jobs:
             URL: https://cas-metascript-wksv3k-tools.pathfinder.gov.bc.ca/api
             QUESTION_PATH: ./test_questions
             DATABASE_ID: 1
-            TEST_ENV: $CIRCLE_TEST
-            TEST_ENV_SESSION: $CIRCLE_METABASE_SESSION
+            $CIRCLE_TEST
+            $CIRCLE_METABASE_SESSION
           command: yarn test
 
       - store_artifacts:
