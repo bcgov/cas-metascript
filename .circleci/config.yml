@@ -12,9 +12,7 @@ jobs:
       - run:
           name: "Setup ENV variables" 
         command: | 
-          echo "export TEST_ENV=`${CIRCLE_TEST}`" >> $BASH_ENV
-        command: | 
-          echo "export TEST_ENV_SESSION=`${CIRCLE_METABASE_SESSION}`" >> $BASH_ENV
+          echo "export TEST_ENV=`${CIRCLE_TEST}` TEST_ENV_SESSION=`${CIRCLE_METABASE_SESSION}`" >> $BASH_ENV
 
       # Download and cache dependencies
       - restore_cache:
