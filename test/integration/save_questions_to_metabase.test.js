@@ -9,7 +9,7 @@ const util = require('util');
 
 jest.setTimeout(30000);
 const directory = path.join(__dirname, 'save_questions_directory');
-const session = (process.env.CIRCLE_TEST_ENV) ? process.env.CIRCLE_METABASE_SESSION : JSON.parse(process.env.TEST_SESSION);
+const session = (process.env.CIRCLE_TEST_ENV) ? JSON.parse(process.env.CIRCLE_METABASE_SESSION) : JSON.parse(process.env.TEST_SESSION);
 
 beforeAll(async () => await getQuestionsFromMetabase({questionDestination: directory, entityList: [],databaseId: 1}, [5]))
 
