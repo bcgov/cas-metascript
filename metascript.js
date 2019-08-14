@@ -114,7 +114,7 @@ program
         console.log('Metabase contains broken questions:')
         console.log(brokenQuestions)
         console.log('exiting..');
-        console.log(pull.help());
+        console.log(push.help());
         process.exit(1);
       }
     })();

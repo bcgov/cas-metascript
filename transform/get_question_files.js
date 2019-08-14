@@ -7,10 +7,9 @@ const util = require('util');
  * @param {Array} flags - The cmd line flags (if --all is set get all questions from the root directory down)
  */
 const getQuestionFiles = (args) => {
-
   const regex = /^\d+/;
   let data = {questions: []};
-  const questionSet = args.entityList;
+  const questionSet = String(args.entityList);
   const allFlag = args.entityList.length === 0 ? true : false;
   const traverseFiles = function(questionSet, dir, allFlag) {
 

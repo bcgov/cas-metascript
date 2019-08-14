@@ -14,11 +14,20 @@ const getQuestionFiles = require('./transform/get_question_files');
  */
 async function saveQuestionsToMetabase(args) {
   try {
-    // const session = await getSession();
-    const session = JSON.parse(process.env.SESSION);
+    let session;
+  if (process.env.CIRCLE_TEST_ENV) {
+    let string = process.env.CIRCLE_TEST_SESSION;
+    const positions = [40,4,3,1];
+    positions.forEach(position => {
+      string = [string.slice(0, position), '"', string.slice(position)].join('');
+    });
+    session = JSON.parse(string);
+  } else if (process.env.NODE_ENV === 'test')
+      session = JSON.parse(process.env.TEST_SESSION);
+    else
+      session = await getSession();
 
     let data = getQuestionFiles(args);
-
     for (let i = 0; i < data.questions.length; i++) {
       let question = data.questions[i];
       question.send = {
@@ -79,5 +88,4 @@ async function saveQuestionsToMetabase(args) {
   catch(e) { console.log(util.inspect(e, false, null, true)); }
 }
 
-// save_question_to_metabase(process.argv.slice(2));
 module.exports = saveQuestionsToMetabase;
