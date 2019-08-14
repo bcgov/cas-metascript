@@ -17,7 +17,7 @@ async function getQuestionsFromMetabase(args, brokenIDs){
     let string = process.env.CIRCLE_TEST_SESSION;
     const positions = [40,4,3,1];
     positions.forEach(position => {
-      string = [string.slice(0, position), quote, string.slice(position)].join('');
+      string = [string.slice(0, position), '"', string.slice(position)].join('');
     });
     session = JSON.parse(string);
   } else 
