@@ -9,6 +9,7 @@ test('placeholder', () => {
   expect(1+1).toBe(2);
 });
 
+jest.setTimeout(30000);
 const directory = path.join(__dirname, 'test_metabase_directory');
 
 afterAll(() => rmdir(directory, error => {}));
