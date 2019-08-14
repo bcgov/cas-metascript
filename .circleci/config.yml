@@ -9,8 +9,8 @@ jobs:
     steps:
       - checkout
 
-      - run: "export TEST_ENV = `echo $CIRCLE_TEST`"
-      - run: "export TEST_ENV_SESSION = `echo $CIRCLE_METABASE_SESSION`"
+      - run: "export TEST_ENV=`echo $CIRCLE_TEST`"
+      - run: "export TEST_ENV_SESSION=`echo $CIRCLE_METABASE_SESSION`"
 
       # Download and cache dependencies
       - restore_cache:
