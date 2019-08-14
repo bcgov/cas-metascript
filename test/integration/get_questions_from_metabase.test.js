@@ -11,7 +11,7 @@ test('placeholder', () => {
 
 const directory = path.join(__dirname, 'test_metabase_directory');
 
-afterAll(() => rmdir(directory, error => {console.log(error)}));
+afterAll(() => rmdir(directory, error => {});
 
 describe('getQuestionsFromMetabase Integration', () => {
   test('getQuestionsFromMetabase creates a folder to house the questions' , async () => {
@@ -26,12 +26,12 @@ describe('getQuestionsFromMetabase Integration', () => {
     expect(fs.existsSync(`${directory}/root/3`)).toBe(true);
   });
 
-  test('getQuestionsFromMetabase saves a specified question when given a question id as a parameter' , async () => {
+  test('getQuestionsFromMetabase saves a specified question when given an array of question ids in entityList as a parameter' , async () => {
     const question = JSON.parse(fs.readFileSync(`${directory}/root/3/1.json`));
     expect(question.id).toBe(1);
   });
 
-  test('getQuestionsFromMetabase creates a folder to house the questions' , async () => {
+  test('getQuestionsFromMetabase saves all qeustions when entityList is an empty array && ignores questions in the brokenQuestions array' , async () => {
     await getQuestionsFromMetabase({questionDestination: directory, entityList: [],}, [5]);
     expect(fs.existsSync(`${directory}/root/3/1.json`)).toBe(true);
     expect(fs.existsSync(`${directory}/root/3/4.json`)).toBe(true);
