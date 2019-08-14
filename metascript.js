@@ -19,7 +19,7 @@ program
 .option('-i, --database-id <id>', 'Metabase database id')
 .option('-q, --question-destination <destination>', 'pull questions to a destination folder')
 .option('-d, --dashboard-destination <destination>', 'pull dashboards to a destination folder')
-.option('-l, --entity-list <list>', 'pull / push a set of questions / dashboards (default: [] pulls/pushes all)', [])
+.option('-l, --entity-list <list>', 'pull a set of questions / dashboards (default: [] pulls/pushes all)', [])
 .option('-B, --ignore-broken-question-check', 'ignores the broken question check and proceeds anyway')
 .action((pull) => {
   if (pull.debug) { console.log(pull.opts()); }
