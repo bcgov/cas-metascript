@@ -25,7 +25,7 @@ async function getSession({force = false}={}) {
     method: 'POST'
   }
   try {
-    const res =  await fetch(url, param)
+    const res =  await fetch(url, param);
     const session = await res.json();
     return session;
   }

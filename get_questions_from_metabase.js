@@ -20,13 +20,14 @@ async function getQuestionsFromMetabase(args, brokenIDs){
       string = [string.slice(0, position), '"', string.slice(position)].join('');
     });
     session = JSON.parse(string);
-  } else 
-    session = await getSession();
-  // const session = (process.env.CIRCLE_TEST_ENV) ? JSON.parse(process.env.CIRCLE_TEST_SESSION) : await getSession();
-  console.log(session.id);
+  } else if (process.env.NODE_ENV === 'test')
+      session = JSON.parse(process.env.TEST_SESSION);
+    else
+      session = await getSession();
+
   const database_id = args.databaseId;
   const questionSet = args.entityList;
-  // const session = JSON.parse(process.env.SESSION);
+  session = (process.env.NODE_ENV === 'test') ? JSON.parse(process.env.SESSION) : session;
   const metabaseQuestions = [];
   console.log('Creating File Structure...')
   const collections = await createFileStructure(args, session);

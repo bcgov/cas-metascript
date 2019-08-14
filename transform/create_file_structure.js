@@ -12,6 +12,7 @@ require('dotenv').config();
 async function createFileStructure(args, session) {
   const database_id = args.databaseId;
   const model = (args.questionDestination) ? 'card' : 'dashboard'
+  const destination = (args.questionDestination) ? args.questionDestination : args.dashboardDestination
   // information about the collection is stored in this object to be returned and used later when writing to disk
   const collections = {};
   // Get all the collections
@@ -45,7 +46,7 @@ async function createFileStructure(args, session) {
   };
   // Create the file structure (based on the collection hierarchy in metabase) that will house all the questions locally
   await Promise.all(Object.keys(collections).map(key => new Promise((resolve, reject) => {
-    mkdirp(`${args.questionDestination}/${collections[key].location}`, function (err) {
+    mkdirp(`${destination}/${collections[key].location}`, function (err) {
       if (err) {
         console.error(err);
         return reject();

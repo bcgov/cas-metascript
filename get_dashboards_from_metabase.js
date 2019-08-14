@@ -11,11 +11,23 @@ require('dotenv').config();
  * @param {Array} databaseSet - a list of questions to get from metabase (if null get all questions from metabase) 
  */
 async function getDashboardsFromMetabase(args){
-  // const session = await getSession();
+  let session;
+  if (process.env.CIRCLE_TEST_ENV) {
+    let string = process.env.CIRCLE_TEST_SESSION;
+    const positions = [40,4,3,1];
+    positions.forEach(position => {
+      string = [string.slice(0, position), '"', string.slice(position)].join('');
+    });
+    session = JSON.parse(string);
+  } else if (process.env.NODE_ENV === 'test')
+      session = JSON.parse(process.env.TEST_SESSION);
+    else
+      session = await getSession();
+
   const database_id = args.databaseId;
   const databaseSet = args.entityList;
   const metabaseDashboards = [];
-  const session = JSON.parse(process.env.SESSION);
+
   console.log('Creating File Structure...')
   const collections = await createFileStructure(args, session);
   console.log('Getting dashboards from metabase...')
@@ -30,7 +42,7 @@ async function getDashboardsFromMetabase(args){
   else {
     for (let i = 0; i < databaseSet.length; i++) {
       const db = await callAPI(session, `/dashboard/${databaseSet[i]}`, 'GET', null, {database: database_id});
-      metabaseQuestions.push(db);
+      metabaseDashboards.push(db);
     }
   }
   
