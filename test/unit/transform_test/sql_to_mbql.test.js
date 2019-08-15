@@ -1,13 +1,13 @@
 const sql_to_mbql = require('../../../transform/sql_to_mbql_adv');
 const util = require('util');
 
-describe('sql -> mbql format conversion tests', () => {
+describe('Test sql -> mbql format conversion', () => {
   const question = {
     sql: '',
     dataset_query:{query:{}}
   }
 
-  test('test conversion of a single table query', () => {
+  test('when given a single table query', () => {
     question.sql = 'select fuel.abc, fuel.cde from ggircs.fuel';
     question.dataset_query = {query:{fields:{0:[123]}}};
 
@@ -24,7 +24,7 @@ describe('sql -> mbql format conversion tests', () => {
     );
   });
 
-  test('test conversion of a query with a where clause', () => {
+  test('when given a query with a where clause', () => {
     question.sql = `select fuel.abc, fuel.cde from ggircs.fuel where fuel.abc = 'Rick Sanchez' `;
     question.dataset_query = {query:{fields:{0:[123]}}};
 
@@ -41,7 +41,7 @@ describe('sql -> mbql format conversion tests', () => {
     );
   });
 
-  test('test conversion of a query with a foreign table', () => {
+  test('when given a query with a foreign table', () => {
     question.sql = 'select fuel.abc, fuel.cde, report.fgh from ggircs.fuel left join ggircs.report on fuel.report_id = report.id';
     question.dataset_query = {query:{fields:{0:[123]}}};
     expect(sql_to_mbql(question))
@@ -57,7 +57,7 @@ describe('sql -> mbql format conversion tests', () => {
     );
   });
 
-  test('test conversion of a query with an aggregation', () => {
+  test('when given a query with an aggregation', () => {
     question.sql = 'select sum(fuel.abc), fuel.cde, report.fgh from ggircs.fuel left join ggircs.report on fuel.report_id = report.id';
     question.dataset_query = {query:{fields:{0:[123]}}};
     expect(sql_to_mbql(question))
@@ -73,7 +73,7 @@ describe('sql -> mbql format conversion tests', () => {
     );
   });
 
-  test('test conversion of a query with an group by / order by', () => {
+  test('when given a query with a group by / order by', () => {
     question.sql = 'select sum(fuel.abc), fuel.cde, report.fgh from ggircs.fuel left join ggircs.report on fuel.report_id = report.id group by fuel.cde order by fuel.cde DESC';
     question.dataset_query = {query:{fields:{0:[123]}}};
     expect(sql_to_mbql(question))
@@ -89,7 +89,7 @@ describe('sql -> mbql format conversion tests', () => {
     );
   });
 
-  test('test conversion of a query with an group by / order by with foreign columns', () => {
+  test('when given a group by / order by with foreign columns', () => {
     question.sql = 'select sum(fuel.abc), fuel.cde, report.fgh from ggircs.fuel left join ggircs.report on fuel.report_id = report.id group by report.fgh order by report.fgh DESC';
     question.dataset_query = {query:{fields:{0:[123]}}};
     expect(sql_to_mbql(question))
@@ -106,13 +106,13 @@ describe('sql -> mbql format conversion tests', () => {
   });
 });
 
-describe('sql -> mbql comparison operator conversion tests', () => {
+describe('Test sql -> mbql comparison operator conversion', () => {
   const question = {
     sql: '',
     dataset_query:{query:{}}
   };
 
-  test('sql operator <> gets parsed to != when converted to mbql', () => {
+  test('when converted to mbql sql operator <> gets parsed to !=', () => {
     question.sql = 'select fuel.abc from ggircs.fuel where fuel.abc <> 5';
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -127,7 +127,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator IS NULL gets parsed to is-null when converted to mbql', () => {
+  test('when converted to mbql sql operator IS NULL gets parsed to is-null', () => {
     question.sql = 'select fuel.abc from ggircs.fuel where fuel.abc is null';
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -142,7 +142,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator IS NOT NULL gets parsed to not-null when converted to mbql', () => {
+  test('when converted to mbql sql operator IS NOT NULL gets parsed to not-null', () => {
     question.sql = 'select fuel.abc from ggircs.fuel where fuel.abc IS NOT NULL';
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -157,7 +157,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [table.column LIKE %\w%] (case sensitive) gets parsed to contains when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [table.column LIKE %\w%] (case sensitive) gets parsed to contains', () => {
     question.sql = "select fuel.abc from ggircs.fuel where fuel.abc like '%word%'";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -172,7 +172,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [NOT table.column LIKE %\w%] (case sensitive) gets parsed to ends-with when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [NOT table.column LIKE %\w%] (case sensitive) gets parsed to ends-with', () => {
     question.sql = "select fuel.abc from ggircs.fuel where fuel.abc NOT like '%word%'";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -187,7 +187,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [table.column NOT LIKE %\w%] (case sensitive) gets parsed to ends-with when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [table.column NOT LIKE %\w%] (case sensitive) gets parsed to ends-with', () => {
     question.sql = "select fuel.abc from ggircs.fuel where fuel.abc NOT like '%word%'";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -202,7 +202,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [table.column LIKE %\w] (case sensitive) gets parsed to ends-with when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [table.column LIKE %\w] (case sensitive) gets parsed to ends-with', () => {
     question.sql = "select fuel.abc from ggircs.fuel where (fuel.abc like '%word')";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -217,7 +217,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [table.column LIKE \w%] (case sensitive) gets parsed to starts-with when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [table.column LIKE \w%] (case sensitive) gets parsed to starts-with', () => {
     question.sql = "select fuel.abc from ggircs.fuel where (fuel.abc like 'word%')";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -232,7 +232,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [foreign_table.column LIKE %\w%] (case sensitive) gets parsed to contains when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [foreign_table.column LIKE %\w%] (case sensitive) gets parsed to contains', () => {
     question.sql = "select fuel.abc from ggircs.fuel left join ggircs.facility on fuel.facility_id = facility.id where facility.cde like '%word%'";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -247,7 +247,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [NOT foreign_table.column LIKE %\w%] (case sensitive) gets parsed to not-contains when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [NOT foreign_table.column LIKE %\w%] (case sensitive) gets parsed to not-contains', () => {
     question.sql = "select fuel.abc from ggircs.fuel left join ggircs.facility on fuel.facility_id = facility.id where not facility.cde like '%word%'";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -262,7 +262,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [foreign_table.column LIKE %\w] (case sensitive) gets parsed to ends-with when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [foreign_table.column LIKE %\w] (case sensitive) gets parsed to ends-with', () => {
     question.sql = "select fuel.abc from ggircs.fuel left join ggircs.facility on fuel.facility_id = facility.id where not facility.cde like '%word'";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -277,7 +277,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [foreign_table.column LIKE \w%] (case sensitive) gets parsed to starts-with when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [foreign_table.column LIKE \w%] (case sensitive) gets parsed to starts-with', () => {
     question.sql = "select fuel.abc from ggircs.fuel left join ggircs.facility on fuel.facility_id = facility.id where not facility.cde like 'word%'";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -292,7 +292,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [lower(table.column LIKE %\w%)] (case insensitive) gets parsed to contains when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [lower(table.column LIKE %\w%)] (case insensitive) gets parsed to contains', () => {
     question.sql = "select fuel.abc from ggircs.fuel where lower(fuel.abc) like '%word%'";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -307,7 +307,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [NOT table.column LIKE %\w%] (case insensitive) gets parsed to ends-with when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [NOT table.column LIKE %\w%] (case insensitive) gets parsed to ends-with', () => {
     question.sql = "select fuel.abc from ggircs.fuel where lower(fuel.abc) NOT like '%word%'";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -322,7 +322,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [table.column NOT LIKE %\w%] (case insensitive) gets parsed to ends-with when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [table.column NOT LIKE %\w%] (case insensitive) gets parsed to ends-with', () => {
     question.sql = "select fuel.abc from ggircs.fuel where (lower(fuel.abc) NOT like '%word%')";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -337,7 +337,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [table.column LIKE %\w] (case insensitive) gets parsed to ends-with when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [table.column LIKE %\w] (case insensitive) gets parsed to ends-with', () => {
     question.sql = "select fuel.abc from ggircs.fuel where (lower(fuel.abc) like '%word')";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -352,7 +352,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [table.column LIKE \w%] (case insensitive) gets parsed to starts-with when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [table.column LIKE \w%] (case insensitive) gets parsed to starts-with', () => {
     question.sql = "select fuel.abc from ggircs.fuel where (lower(fuel.abc) like 'word%')";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -367,7 +367,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [foreign_table.column LIKE %\w%] (case insensitive) gets parsed to contains when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [foreign_table.column LIKE %\w%] (case insensitive) gets parsed to contains', () => {
     question.sql = "select fuel.abc from ggircs.fuel left join ggircs.facility on fuel.facility_id = facility.id where lower(facility.cde) like '%word%'";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -382,7 +382,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [NOT foreign_table.column LIKE %\w%] (case insensitive) gets parsed to not-contains when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [NOT foreign_table.column LIKE %\w%] (case insensitive) gets parsed to not-contains', () => {
     question.sql = "select fuel.abc from ggircs.fuel left join ggircs.facility on fuel.facility_id = facility.id where not lower(facility.cde) like '%word%'";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -397,7 +397,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [foreign_table.column LIKE %\w] (case insensitive) gets parsed to ends-with when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [foreign_table.column LIKE %\w] (case insensitive) gets parsed to ends-with', () => {
     question.sql = "select fuel.abc from ggircs.fuel left join ggircs.facility on fuel.facility_id = facility.id where not lower(facility.cde) like '%word'";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -412,7 +412,7 @@ describe('sql -> mbql comparison operator conversion tests', () => {
     )
   });
 
-  test('sql operator pattern [foreign_table.column LIKE \w%] (case insensitive) gets parsed to starts-with when converted to mbql', () => {
+  test('when converted to mbql sql operator pattern [foreign_table.column LIKE \w%] (case insensitive) gets parsed to starts-with', () => {
     question.sql = "select fuel.abc from ggircs.fuel left join ggircs.facility on fuel.facility_id = facility.id where not lower(facility.cde) like 'word%'";
     expect(sql_to_mbql(question))
     .toStrictEqual(
