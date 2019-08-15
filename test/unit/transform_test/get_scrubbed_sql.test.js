@@ -5,7 +5,7 @@ jest.mock('../../../api_calls/call_api');
 
 describe('scrub metabase sql tests', () => {
 
-  describe('when fields are defined', () => {
+  describe('when fields or aggregation are defined', () => {
     let question;
     beforeEach(() => {
 
@@ -114,7 +114,7 @@ describe('scrub metabase sql tests', () => {
     });
   });
   //TODO: check this out
-  describe('when fields are an empty array or undefined', () => {
+  describe('when fields and aggregation are an empty array or undefined', () => {
     test('getScrubbedSQL replaces all fields from select clause with a `*` if dataset_query.query.fields is empty and dataset_query.query.aggregation is empty' , async () => {
       const question = {
         dataset_query: {
