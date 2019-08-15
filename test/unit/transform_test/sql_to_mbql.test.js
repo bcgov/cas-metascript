@@ -105,7 +105,7 @@ describe('Test sql -> mbql format conversion', () => {
     );
   });
 });
-//TODO: check uppercase comparison && mixed
+
 describe('Test sql -> mbql comparison operator conversion', () => {
   const question = {
     sql: '',
