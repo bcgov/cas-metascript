@@ -8,10 +8,10 @@ const saveDashboardsToMetabase = require('./save_dashboards_to_metabase');
 
 const commander = require('commander');
 const program = new commander.Command();
-program.version('0.0.1');
+program
+.version('0.0.1')
+.option('-D, --debug', 'show options');
 
-
-//give program a -D
 program
 .command('pull')
 .description('get entities from Metabase')
@@ -141,3 +141,4 @@ program
   })();
 });
 program.parse(process.argv);
+if (program.debug) { console.log(program.opts()); console.log(program.help()) }
