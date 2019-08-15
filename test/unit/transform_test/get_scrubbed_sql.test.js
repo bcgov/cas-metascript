@@ -5,21 +5,21 @@ jest.mock('../../../api_calls/call_api');
 
 describe('scrub metabase sql tests', () => {
 
-  let question;
-  beforeEach(() => {
+  describe('when fields are defined', () => {
+    let question;
+    beforeEach(() => {
 
-    callAPI.mockReset();
-    question = {
-      dataset_query: {
-        query: {
-          fields: ['abc', 'cde'],
-          aggregation: []
+      callAPI.mockReset();
+      question = {
+        dataset_query: {
+          query: {
+            fields: ['abc', 'cde'],
+            aggregation: []
+          }
         }
       }
-    }
-  });
+    });
 
-  describe('scrub sql tests', () => {
     test('getScrubbedSQL gets the native sql from queryData.data.native_form path' , async () => {
       let returnValue = {
         data: {
@@ -94,8 +94,29 @@ describe('scrub metabase sql tests', () => {
       )
     });
 
+    test('getScrubbedSQL replaces all ? in the query from the params array in order if params are defined' , async () => {
+      const returnValue = {
+        data: {
+          native_form: {
+            query: 'select schema.table1.abc, schema.table1.cde from schema.table1 where abc = ? and cde = ?',
+            params: ['duck', 'goose']
+          }
+        }
+      }
+
+      callAPI.mockImplementation(() => returnValue);
+      const session = {id: 12345};
+      const scrubbedSQL = await getScrubbedSQL(question, session)
+      expect(scrubbedSQL)
+      .toEqual(
+        "select table1.abc, table1.cde from schema.table1 where abc = 'duck' and cde = 'goose'"
+      )
+    });
+  });
+  //TODO: check this out
+  describe('when fields are an empty array or undefined', () => {
     test('getScrubbedSQL replaces all fields from select clause with a `*` if dataset_query.query.fields is empty and dataset_query.query.aggregation is empty' , async () => {
-      question = {
+      const question = {
         dataset_query: {
           query: {
             fields: [],
@@ -116,34 +137,7 @@ describe('scrub metabase sql tests', () => {
       const scrubbedSQL = await getScrubbedSQL(question, session)
       expect(scrubbedSQL)
       .toEqual(
-        'select table1.abc, table1.cde from schema.table1'
-      )
-    });
-
-    test('getScrubbedSQL replaces all ? in the query from the params array in order if params are defined' , async () => {
-      question = {
-        dataset_query: {
-          query: {
-            fields: ['abc'],
-            aggregation: []
-          }
-        }
-      }
-      const returnValue = {
-        data: {
-          native_form: {
-            query: 'select schema.table1.abc, schema.table1.cde from schema.table1 where abc = ? and cde = ?',
-            params: ['duck', 'goose']
-          }
-        }
-      }
-
-      callAPI.mockImplementation(() => returnValue);
-      const session = {id: 12345};
-      const scrubbedSQL = await getScrubbedSQL(question, session)
-      expect(scrubbedSQL)
-      .toEqual(
-        "select table1.abc, table1.cde from schema.table1 where abc = 'duck' and cde = 'goose'"
+        'select * from schema.table1'
       )
     });
   });

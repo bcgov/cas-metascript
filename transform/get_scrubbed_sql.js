@@ -17,9 +17,10 @@ const scrubMetabaseSQL = (question, sql, params) => {
   // replace instances of schema.table.field with table.field
   scrubbedSQL = scrubbedSQL.replace(/\w+\.(\w+\.\w+)/gi, '$1');
 
+
   // If the dataset query has no fields and no aggregation then it is a select all, replace long list of fields with a *
-  if (!question.dataset_query.query.fields && !question.dataset_query.query.aggregation) {
-    const replaceStar = /(?<=SELECT)[\w\W]*(?=FROM)/g;
+  if ((!question.dataset_query.query.fields || question.dataset_query.query.fields.length === 0) && (!question.dataset_query.query.aggregation || question.dataset_query.query.aggregation.length === 0)) {
+    const replaceStar = /(?<=SELECT)[\w\W]*(?=FROM)/gi;
     scrubbedSQL = scrubbedSQL.replace(replaceStar, ' * ');
   };
 
