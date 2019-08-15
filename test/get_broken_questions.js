@@ -8,39 +8,23 @@ require('dotenv').config();
  * If there is an error, the questions is pushed to the brokenCards array which is reported at the end of the function.
  * No broken cards results in an exit code 0, otherwise we exit with code 1.
  */
-async function getBrokenQuestions() {
+async function getBrokenQuestions(database_id) {
   try {
-    // const session = await getSession();
-    const session = JSON.parse(process.env.SESSION);
-    const database_id = process.env.DATABASE_ID;
+    const session = await getSession();
+    // const session = JSON.parse(process.env.SESSION);
     const brokenCards = [];
-    // const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: database_id});
-    const allDatabaseCards = []
-    // Debugging (don't get all cards every time)
-    const questionSet = [100, 99, 98, 71];
-    for (let i = 0; i < 5; i++) {
-      const card = await callAPI(session, `/card/${questionSet[i]}`, 'GET', null, {database: database_id});
-      allDatabaseCards.push(card);
-    }
+    const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: database_id});
+
     for (let i = 0; i < allDatabaseCards.length; i++) {
     const queryData = await callAPI(session, `/card/${allDatabaseCards[i].id}/query`, 'POST');
       if (queryData.error) {
         brokenCards.push(`${allDatabaseCards[i].id}_${allDatabaseCards[i].name}`);
       }
     }
-    const noErrorFace = String.fromCodePoint(0x1F603);
-    if (brokenCards.length === 0) {
-      console.log(`No Card Errors ${noErrorFace}`);
-      process.exit(0);
-    }
-    else {
-      console.log(`Broken Cards (ID_Name): ${brokenCards}`);
-      process.exit(1);
-    }
+
+    return brokenCards;
   }
   catch(e) { console.error(e); }
 }
-
-getBrokenQuestions();
 
 module.exports = getBrokenQuestions;

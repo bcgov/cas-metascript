@@ -9,9 +9,10 @@ require('dotenv').config();
  * @param {object} session - The session for the logged in user, contains a session id to be passed in when calling the api 
  * @returns {object} collections - the collections object is returned to be used when writing the questions to disk
  */
-async function createFileStructure(session) {
-  const database_id = process.env.DATABASE_ID;
-  const unixTimestamp = Date.now();
+async function createFileStructure(args, session) {
+  const database_id = args.databaseId;
+  const model = (args.questionDestination) ? 'card' : 'dashboard'
+  const destination = (args.questionDestination) ? args.questionDestination : args.dashboardDestination
   // information about the collection is stored in this object to be returned and used later when writing to disk
   const collections = {};
   // Get all the collections
@@ -38,14 +39,14 @@ async function createFileStructure(session) {
     }
     // Push the id of each card in the collection to the cards array inside the collections object
     collectionItems.forEach(item => {
-      if (item.model === 'card') {
+      if (item.model === model) {
         collections[collectionData[i].id].cards.push(item.id);
       }
     });
   };
   // Create the file structure (based on the collection hierarchy in metabase) that will house all the questions locally
   await Promise.all(Object.keys(collections).map(key => new Promise((resolve, reject) => {
-    mkdirp(`./metabase_questions/${unixTimestamp}/${collections[key].location}`, function (err) {
+    mkdirp(`${destination}/${collections[key].location}`, function (err) {
       if (err) {
         console.error(err);
         return reject();
@@ -53,8 +54,7 @@ async function createFileStructure(session) {
       resolve();
     })
   })));
-  // Add the timestamp (for debugging, to be removed)
-  collections.unixTimestamp = unixTimestamp;
+
   return collections;
 }
 

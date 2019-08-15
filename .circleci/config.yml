@@ -2,12 +2,21 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:8.15.1
+      - image: circleci/node:current
 
     working_directory: ~/repo
 
     steps:
       - checkout
+
+      - run:
+          name: "Setup CIRCLE_TEST_ENV variable" 
+          command: | 
+            echo "export CIRCLE_TEST_ENV=$CIRCLE_TEST" >> $BASH_ENV
+      - run:
+          name: "Setup CIRCLE_TEST_SESSION variable" 
+          command: | 
+            echo "export CIRCLE_TEST_SESSION=$CIRCLE_METABASE_SESSION" >> $BASH_ENV
 
       # Download and cache dependencies
       - restore_cache:
@@ -16,12 +25,20 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
-      - run: npm install
+      - run: yarn install
 
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-
       # run tests!
-      - run: npm test
+      - run:
+          name: Run tests
+          environment:
+            URL: https://cas-metascript-wksv3k-tools.pathfinder.gov.bc.ca/api
+            QUESTION_PATH: ./test_questions
+            DATABASE_ID: 1
+          command: yarn test
+
+      - store_artifacts:
+          path: coverage

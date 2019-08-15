@@ -1,5 +1,4 @@
 const util = require('util');
-const sqlToMbql = require('./sql_to_mbql_adv');
 const callAPI = require('../api_calls/call_api');
 
 /**
@@ -39,7 +38,7 @@ async function mapSQLValuesToID(question, session) {
   const metadata = await callAPI(session, `/database/${question.database_id}/metadata`, 'GET')
   metadata.tables.forEach(table => {
     if (table.name === question.mbql.source_table[0] && table.schema.toUpperCase() === question.schema.toUpperCase()) {
-      question.mbql.source_table.push(table.id)
+      question.mbql.source_table.push(table.id);
       // find the metabase field id that corresponds to the sql column name
       question.mbql.columns.forEach(column => {
         table.fields.forEach(field => {
@@ -54,7 +53,7 @@ async function mapSQLValuesToID(question, session) {
       if (table.name === foreign_column[0] && table.schema.toUpperCase() === question.schema.toUpperCase()) {
         table.fields.forEach(field => {
           if (field.name === foreign_column[1]) {
-            foreign_column.push(field.id)
+            foreign_column.push(field.id);
           }
         })
       }
@@ -66,14 +65,8 @@ async function mapSQLValuesToID(question, session) {
   question.mbql.fields = replaceValues(question.mbql.fields, question.mbql.columns, question.mbql.foreign_columns)
   question.mbql.aggregation = replaceValues(question.mbql.aggregation, question.mbql.columns, question.mbql.foreign_columns)
   question.mbql['order-by'] = replaceValues(question.mbql['order-by'], question.mbql.columns, question.mbql.foreign_columns)
-  
-  return question
+
+  return question;
 }
 
-const convertToMBQL = (question, session) => {
-  question.mbql = sqlToMbql(question);
-  const convertedQuestion = mapSQLValuesToID(question, session)
-  return convertedQuestion;
-}
-
-module.exports = convertToMBQL;
+module.exports = mapSQLValuesToID;

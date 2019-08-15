@@ -17,9 +17,10 @@ const scrubMetabaseSQL = (question, sql, params) => {
   // replace instances of schema.table.field with table.field
   scrubbedSQL = scrubbedSQL.replace(/\w+\.(\w+\.\w+)/gi, '$1');
 
+
   // If the dataset query has no fields and no aggregation then it is a select all, replace long list of fields with a *
-  if (!question.dataset_query.query.fields && !question.dataset_query.query.aggregation) {
-    const replaceStar = /(?<=SELECT)[\w\W]*(?=FROM)/g;
+  if ((!question.dataset_query.query.fields || question.dataset_query.query.fields.length === 0) && (!question.dataset_query.query.aggregation || question.dataset_query.query.aggregation.length === 0)) {
+    const replaceStar = /(?<=SELECT)[\w\W]*(?=FROM)/gi;
     scrubbedSQL = scrubbedSQL.replace(replaceStar, ' * ');
   };
 
@@ -34,15 +35,17 @@ const scrubMetabaseSQL = (question, sql, params) => {
 }
 
 async function getScrubbedSQL(question, session) {
-  
+
   try{
     // Must run the query to retrieve the native sql
     const queryData = await call_api(session, `/card/${question.id}/query`, 'POST');
     let sqlFromMetabase;
     let sqlParams;
       // Two different places to retrieve the native sql depending on the type of query
-      if (queryData.data.native_form)
+      if (queryData.data) {
         sqlFromMetabase = queryData.data.native_form.query;
+        sqlParams = queryData.data.native_form.params;
+      }
       else if (queryData.native) {
         sqlFromMetabase = queryData.native.query;
         sqlParams = queryData.native.params;

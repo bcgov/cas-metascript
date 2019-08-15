@@ -7,7 +7,6 @@ const util = require('util');
  * @param {object} body - The body of the request
  */
 async function postQuestion(apiEndpoint, question, session, method) {
-  
   const data = question.send.dataset_query;
 
   let card = {};
@@ -17,9 +16,8 @@ async function postQuestion(apiEndpoint, question, session, method) {
       visualization_settings: question.visualization_settings,
       description: question.description,
       collection_position: question.collection_position,
-      // collection_id set for debugging so that new questions are posted to my personal collection
-      collection_id: 46,
-      name: question.name,//`dev_id_${question.id}`,
+      collection_id: question.collection_id,
+      name: question.name,
       dataset_query: data,
       display: question.display
     }
@@ -40,9 +38,14 @@ async function postQuestion(apiEndpoint, question, session, method) {
     body: JSON.stringify(card),
     method
   };
-  const res = await fetch(url, param);
-  console.log(res.status);
-  return res;
+  try {
+    const res = await fetch(url, param);
+    console.log(res.status);
+    return res;
+  } catch(e) {
+    console.log(res.status);
+    return res;
+  }
 };
 
 module.exports = postQuestion;

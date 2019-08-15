@@ -11,19 +11,32 @@ require('dotenv').config();
  * locally based on the hierarchy of collections in metabase and saves the questions locally within their collection folder
  * @param {Array} questionSet - a list of questions to get from metabase (if null get all questions from metabase) 
  */
-async function getQuestionsFromMetabase(questionSet){
-  // const session = await getSession();
-  const database_id = process.env.DATABASE_ID
-  const session = JSON.parse(process.env.SESSION);
+async function getQuestionsFromMetabase(args, brokenIDs){
+  let session;
+  if (process.env.CIRCLE_TEST_ENV) {
+    let string = process.env.CIRCLE_TEST_SESSION;
+    const positions = [40,4,3,1];
+    positions.forEach(position => {
+      string = [string.slice(0, position), '"', string.slice(position)].join('');
+    });
+    session = JSON.parse(string);
+  } else if (process.env.NODE_ENV === 'test')
+      session = JSON.parse(process.env.TEST_SESSION);
+    else
+      session = await getSession();
+
+  const database_id = args.databaseId;
+  const questionSet = args.entityList;
   const metabaseQuestions = [];
   console.log('Creating File Structure...')
-  const collections = await createFileStructure(session);
+  const collections = await createFileStructure(args, session);
 
   console.log('Getting questions from metabase...')
   // If no set of questions has been entered on the command line, get all questions from metabase
   if (questionSet.length === 0) {
     const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: database_id});
     allDatabaseCards.forEach(card => {
+      if (!brokenIDs.includes(card.id)) {
       metabaseQuestions.push({
         id: card.id,
         database_id: card.database_id,
@@ -36,34 +49,36 @@ async function getQuestionsFromMetabase(questionSet){
         dataset_query: card.dataset_query,
         segment: false,
         sql: ''})
+      }
     });
   }
   // If there is a set of space-separated questions entered in the command line, only get those questions
   else {
     for (let i = 0; i < questionSet.length; i++) {
       const card = await callAPI(session, `/card/${questionSet[i]}`, 'GET', null, {database: database_id});
-      metabaseQuestions.push({
-        id: card.id,
-        database_id: card.database_id,
-        description: card.description,
-        collection_position: card.collection_position,
-        collection_id: card.collection_id,
-        display: card.display,
-        visualization_settings: card.visualization_settings,
-        name: card.name,
-        dataset_query: card.dataset_query,
-        segment: false,
-        sql: ''
-      });
+      if (!brokenIDs.includes(card.id)) {
+        metabaseQuestions.push({
+          id: card.id,
+          database_id: card.database_id,
+          description: card.description,
+          collection_position: card.collection_position,
+          collection_id: card.collection_id,
+          display: card.display,
+          visualization_settings: card.visualization_settings,
+          name: card.name,
+          dataset_query: card.dataset_query,
+          segment: false,
+          sql: ''
+        });
+      }
     }
   }
 
   for (let i = 0; i < metabaseQuestions.length; i++) {
     let question = metabaseQuestions[i];
-
     try {
       // Scrub the sql from metabase (if the query is not native / the source table is another card)
-      if (question.dataset_query.type !== 'native' && !question.dataset_query.query["source-table"].match(/card.*/)) {
+      if (question.dataset_query.type !== 'native' && !question.dataset_query.query["source-table"].toString().match(/card.*/)) {
         const scrubbedSQL = await getScrubbedSQL(question, session);
         question.sql = scrubbedSQL;
         // TODO: find out how to deal with segments. Currently I am inserting the params for the segment directly into the sql query,
@@ -80,7 +95,7 @@ async function getQuestionsFromMetabase(questionSet){
 
       const writeFile = util.promisify(fs.writeFile);
       try {
-        await writeFile(`./metabase_questions/${collections.unixTimestamp}/${collections[question.collection_id].location}/${question.id}.json`, JSON.stringify(question));
+        await writeFile(`${args.questionDestination}/${collections[question.collection_id].location}/${question.id}.json`, JSON.stringify(question));
         console.log(`Question ${i+1} / ${metabaseQuestions.length} finished (Metabase card id: ${metabaseQuestions[i].id})`);
       }
       catch(e) { console.log(e); }
@@ -89,4 +104,4 @@ async function getQuestionsFromMetabase(questionSet){
   }
 }
 
-getQuestionsFromMetabase(process.argv.slice(2));
+module.exports = getQuestionsFromMetabase;
