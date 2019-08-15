@@ -1,15 +1,17 @@
 const mockedEnv = require('mocked-env');
 const { setupRecorder } = require('nock-record');
 const getSession = require('../../../api_calls/get_session');
+const nockedBadURL = require('./__nock-fixtures__/get_session_with_bad_credentials');
+const nockedGoodURL = require('./__nock-fixtures__/get_session_with_good_credentials');
 
 const record = setupRecorder({ mode: 'record' });
-// Get the URL from the nock fixture a la METABASE_USERNAME
+
 describe('getSession() tests', () => {
   test('getSession fails with bad credentials', async () => {
     const restore = mockedEnv({
       METABASE_USERNAME: 'bad@credentials.is',
       METABASE_PASSWORD: 'accessdenied',
-      URL: process.env.URL
+      URL: `${nockedBadURL[0].scope.slice(0, nockedBadURL[0].scope.length - 4)}/api` || process.env.TEST_URL,
     });
 
     const { completeRecording, assertScopesFinished } = await record("get_session_with_bad_credentials");
@@ -26,7 +28,7 @@ describe('getSession() tests', () => {
     const restore = mockedEnv ({
       METABASE_USERNAME: 'good@user.is',
       METABASE_PASSWORD: 'goodpassword',
-      URL: process.env.URL
+      URL: `${nockedGoodURL[0].scope.slice(0, nockedGoodURL[0].scope.length - 4)}/api` || process.env.TEST_URL,
     });
 
     const  { completeRecording, assertScopesFinished } = await record('get_session_with_good_credentials');
