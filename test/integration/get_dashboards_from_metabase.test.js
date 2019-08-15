@@ -8,12 +8,15 @@ const util = require('util');
 jest.setTimeout(30000);
 const directory = path.join(__dirname, 'test_metabase_dashboards_directory');
 
-// TODO: same as get q's
-afterAll(() => rmdir(directory, error => {}));
-
-describe('getDashboardsFromMetabase Integration', () => {
-  test('getDashboardsFromMetabase creates a folder to house the dashboards' , async () => {
+describe('Test getDashboardsFromMetabase Integration when entityList is not empty', () => {
+  beforeAll(async () => {
+    rmdir(directory, error => {})
     await getDashboardsFromMetabase({dashboardDestination: directory, entityList: [1], databaseId: 1});
+  });
+  afterAll(() => rmdir(directory, error => {}));
+
+  test('getDashboardsFromMetabase creates a folder to house the dashboards' , async () => {
+
     expect(fs.existsSync(directory)).toBe(true);
   });
 
@@ -24,13 +27,19 @@ describe('getDashboardsFromMetabase Integration', () => {
     expect(fs.existsSync(`${directory}/root/3`)).toBe(true);
   });
 
-  test('getDashboardsFromMetabase saves a specified question when given an array of dashboard ids in entityList as a parameter' , async () => {
+  test('getDashboardsFromMetabase saves a specified question' , async () => {
     const question = JSON.parse(fs.readFileSync(`${directory}/root/2/dashboard_1.json`));
     expect(question.id).toBe(1);
   });
-
-  test('getQuestionsFromMetabase saves all dashboards when entityList is an empty array' , async () => {
+});
+describe('Test getDashboardsFromMetabase Integration when entityList is an empty array', () => {
+  beforeAll(async () => {
+    rmdir(directory, error => {})
     await getDashboardsFromMetabase({dashboardDestination: directory, entityList: [], databaseId: 1});
+  });
+  afterAll(() => rmdir(directory, error => {}));
+
+  test('getQuestionsFromMetabase saves all dashboards' , async () => {
     expect(fs.existsSync(`${directory}/root/2/dashboard_1.json`)).toBe(true);
     expect(fs.existsSync(`${directory}/root/3/dashboard_5.json`)).toBe(true);
   });

@@ -11,18 +11,18 @@ jest.setTimeout(30000);
 const directory = path.join(__dirname, 'save_questions_directory');
 const session = (process.env.CIRCLE_TEST_ENV) ? JSON.parse(process.env.CIRCLE_METABASE_SESSION) : JSON.parse(process.env.TEST_SESSION);
 
-beforeAll(
-  async () => {
-    rmdir(directory, error => {});
-    await getQuestionsFromMetabase({questionDestination: directory, entityList: [],databaseId: 1}, [5])
-  })
+describe('Test saveQuestionsToMetabase Integration', () => {
+  beforeAll(
+    async () => {
+      rmdir(directory, error => {});
+      await getQuestionsFromMetabase({questionDestination: directory, entityList: [],databaseId: 1}, [5])
+    })
 
-afterAll(() => {
-  rmdir(directory, error => {});
-});
-// TODO: rename tests with whens
-describe('saveQuestionsToMetabase Integration', () => {
-  test('on save=true, saveQuestionsToMetabase saves specified question(s) to metabase with a new id if entityList is not empty' , async () => {
+  afterAll(() => {
+    rmdir(directory, error => {});
+  });
+
+  test('when entityList is not empty && save=true, saveQuestionsToMetabase saves specified question(s) to metabase with a new id' , async () => {
     await saveQuestionsToMetabase({questionDirectory: directory, save:true, entityList:[1]});
 
     let allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: 1});
@@ -37,7 +37,7 @@ describe('saveQuestionsToMetabase Integration', () => {
     await callAPI(session, `/card/${newCardID}`, 'DELETE', null, {database: 1});
   });
 
-  test('on edit=true, saveQuestionsToMetabase edits specified question(s) in place and saves to metabase if entityList is not empty' , async () => {
+  test('when entityList is not empty && edit=true, saveQuestionsToMetabase edits specified question(s) in place and saves to metabase' , async () => {
     const question1 = fs.readFileSync((`${directory}/root/3/1.json`))
     const parsedQ1 = JSON.parse(question1);
     parsedQ1.sql = "SELECT PEOPLE.NAME FROM PUBLIC.PEOPLE LIMIT 2000"
@@ -52,11 +52,11 @@ describe('saveQuestionsToMetabase Integration', () => {
     await saveQuestionsToMetabase({questionDirectory: directory, edit:true, entityList:[1]});
   });
 
-  xtest('on save=true, saveQuestionsToMetabase saves all questions in directory to metabase with a new id if entityList is empty', async () => {
+  xtest('when entityList is empty && save=true, saveQuestionsToMetabase saves all questions in directory to metabase with a new id', async () => {
 
   });
 
-  xtest('on edit=true, saveQuestionsToMetabase saves all questions in directory to metabase with a new id if entityList is empty', async () => {
+  xtest('when entityList is empty && edit=true, saveQuestionsToMetabase saves all questions in directory to metabase with a new id', async () => {
 
   });
 });
