@@ -105,7 +105,7 @@ describe('Test sql -> mbql format conversion', () => {
     );
   });
 });
-
+//TODO: check uppercase comparison && mixed
 describe('Test sql -> mbql comparison operator conversion', () => {
   const question = {
     sql: '',
@@ -172,22 +172,7 @@ describe('Test sql -> mbql comparison operator conversion', () => {
     )
   });
 
-  test('when converted to mbql sql operator pattern [NOT table.column LIKE %\w%] (case sensitive) gets parsed to ends-with', () => {
-    question.sql = "select fuel.abc from ggircs.fuel where fuel.abc NOT like '%word%'";
-    expect(sql_to_mbql(question))
-    .toStrictEqual(
-      {"aggregation": [],
-      "breakout": [],
-      "columns": [["abc"]],
-      "fields": [],
-      "filter": ['not-contains', 'abc', 'word', {'case-sensitive': true}],
-      "foreign_columns": [],
-      "order-by": [],
-      "source_table": ["fuel"]}
-    )
-  });
-
-  test('when converted to mbql sql operator pattern [table.column NOT LIKE %\w%] (case sensitive) gets parsed to ends-with', () => {
+  test('when converted to mbql sql operator pattern [NOT table.column LIKE %\w%] (case sensitive) gets parsed to not-contains', () => {
     question.sql = "select fuel.abc from ggircs.fuel where fuel.abc NOT like '%word%'";
     expect(sql_to_mbql(question))
     .toStrictEqual(
@@ -292,7 +277,7 @@ describe('Test sql -> mbql comparison operator conversion', () => {
     )
   });
 
-  test('when converted to mbql sql operator pattern [lower(table.column LIKE %\w%)] (case insensitive) gets parsed to contains', () => {
+  test('when converted to mbql sql operator pattern [lower(table.column) LIKE %\w%] (case insensitive) gets parsed to contains', () => {
     question.sql = "select fuel.abc from ggircs.fuel where lower(fuel.abc) like '%word%'";
     expect(sql_to_mbql(question))
     .toStrictEqual(

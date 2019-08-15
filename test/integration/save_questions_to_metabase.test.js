@@ -11,12 +11,16 @@ jest.setTimeout(30000);
 const directory = path.join(__dirname, 'save_questions_directory');
 const session = (process.env.CIRCLE_TEST_ENV) ? JSON.parse(process.env.CIRCLE_METABASE_SESSION) : JSON.parse(process.env.TEST_SESSION);
 
-beforeAll(async () => await getQuestionsFromMetabase({questionDestination: directory, entityList: [],databaseId: 1}, [5]))
+beforeAll(
+  async () => {
+    rmdir(directory, error => {});
+    await getQuestionsFromMetabase({questionDestination: directory, entityList: [],databaseId: 1}, [5])
+  })
 
 afterAll(() => {
   rmdir(directory, error => {});
 });
-
+// TODO: rename tests with whens
 describe('saveQuestionsToMetabase Integration', () => {
   test('on save=true, saveQuestionsToMetabase saves specified question(s) to metabase with a new id if entityList is not empty' , async () => {
     await saveQuestionsToMetabase({questionDirectory: directory, save:true, entityList:[1]});
@@ -48,11 +52,11 @@ describe('saveQuestionsToMetabase Integration', () => {
     await saveQuestionsToMetabase({questionDirectory: directory, edit:true, entityList:[1]});
   });
 
-  test('on save=true, saveQuestionsToMetabase saves all questions in directory to metabase with a new id if entityList is empty', async () => {
+  xtest('on save=true, saveQuestionsToMetabase saves all questions in directory to metabase with a new id if entityList is empty', async () => {
 
   });
 
-  test('on edit=true, saveQuestionsToMetabase saves all questions in directory to metabase with a new id if entityList is empty', async () => {
+  xtest('on edit=true, saveQuestionsToMetabase saves all questions in directory to metabase with a new id if entityList is empty', async () => {
 
   });
 });

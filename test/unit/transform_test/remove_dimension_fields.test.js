@@ -3,7 +3,7 @@ const callAPI = require('../../../api_calls/call_api');
 const util = require('util');
 jest.mock('../../../api_calls/call_api');
 
-describe('remove_dimension_fields tests', () => {
+describe('Test remove_dimension_fields()', () => {
   const question = {
     mbql:{
       fields: []
@@ -13,7 +13,7 @@ describe('remove_dimension_fields tests', () => {
     callAPI.mockReset();
   });
 
-  test('test no fields are removed when there are no dimension fields present', async () => {
+  test('when there are no dimension fields present: no fields are removed ', async () => {
     const returnValue = {
       dimensions: []
     }
@@ -28,7 +28,7 @@ describe('remove_dimension_fields tests', () => {
     );
   });
 
-  test('test no fields are removed when the fk field id is not repeated in the non-fk fields', async () => {
+  test('when the fk field id is not repeated in the non-fk fields: no fields are removed ', async () => {
     const returnValue = {
       dimensions: {
         field_id: 4321,
@@ -46,7 +46,7 @@ describe('remove_dimension_fields tests', () => {
     );
   });
 
-  test('test no fields are removed when the fk field id is repeated in the non-fk fields but the human-readable field does not match the fk target', async () => {
+  test('when the fk field id is repeated in the non-fk fields but the human-readable field does not match the fk target no fields are removed ', async () => {
     const returnValue = {
       dimensions: {
         field_id: 4321,

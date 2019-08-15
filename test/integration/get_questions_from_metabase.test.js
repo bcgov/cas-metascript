@@ -8,11 +8,16 @@ const util = require('util');
 jest.setTimeout(30000);
 const directory = path.join(__dirname, 'test_metabase_directory');
 
-afterAll(() => rmdir(directory, error => {}));
-
 describe('getQuestionsFromMetabase Integration', () => {
-  test('getQuestionsFromMetabase creates a folder to house the questions' , async () => {
+
+  beforeAll(async () => {
+    rmdir(directory, error => {})
     await getQuestionsFromMetabase({questionDestination: directory, entityList: [1],}, []);
+  });
+  afterAll(() => rmdir(directory, error => {}));
+
+  test('getQuestionsFromMetabase creates a folder to house the questions' , async () => {
+
     expect(fs.existsSync(directory)).toBe(true);
   });
 
@@ -27,13 +32,20 @@ describe('getQuestionsFromMetabase Integration', () => {
     const question = JSON.parse(fs.readFileSync(`${directory}/root/3/1.json`));
     expect(question.id).toBe(1);
   });
+});
+
+describe('empty entity list', () => {
+  beforeAll(async () => {
+    rmdir(directory, error => {})
+    await getQuestionsFromMetabase({questionDestination: directory, entityList: [],}, [5]);
+  });
+  afterAll(() => rmdir(directory, error => {}));
 
   test('getQuestionsFromMetabase saves all qeustions when entityList is an empty array && ignores questions in the brokenQuestions array' , async () => {
-    await getQuestionsFromMetabase({questionDestination: directory, entityList: [],}, [5]);
     expect(fs.existsSync(`${directory}/root/3/1.json`)).toBe(true);
     expect(fs.existsSync(`${directory}/root/3/4.json`)).toBe(true);
     expect(fs.existsSync(`${directory}/root/2/3.json`)).toBe(true);
     expect(fs.existsSync(`${directory}/root/2/5.json`)).toBe(false);
     expect(fs.existsSync(`${directory}/root/2/6.json`)).toBe(true);
   });
-});
+})

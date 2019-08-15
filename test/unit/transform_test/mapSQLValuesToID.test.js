@@ -29,31 +29,38 @@ describe('mapSQLValuesToID tests', () => {
       }
     ]
   }
-  let question;
-  
-  beforeEach(() => {
 
+  const mbql = {
+    source_table: [],
+    fields: [],
+    filter: [],
+    breakout: [],
+    aggregation: [],
+    "order-by": [],
+    columns: [],
+    foreign_columns: []
+  }
+
+  const defaultQuestion = {
+    schema: 'test',
+    mbql
+  }
+
+  beforeEach(() => {
     callAPI.mockReset();
-    question = {
-      schema: 'test',
-      mbql:{
-        source_table: [],
-        fields: [],
-        filter: [],
-        breakout: [],
-        aggregation: [],
-        "order-by": [],
-        columns: [],
-        foreign_columns: []
-      }  
-    }
   });
 
   describe('fields (select statement) tests', () => {
     test('named fields columns in simple queries (no fk relations) can be converted to corresponding mbql field IDs' , async () => {
-      question.mbql.source_table = ['table1'];
-      question.mbql.fields = ['abc', 'cde'];
-      question.mbql.columns = [['abc'], ['cde']];
+      const question = {
+        ...defaultQuestion,
+        mbql:{
+          ...defaultQuestion.mbql,
+          source_table: ['table1'],
+          fields: ['abc', 'cde'],
+          columns: [['abc'], ['cde']]
+        }
+      };
 
       callAPI.mockImplementation(() => returnValue);
       const session = {id: 12345};
@@ -73,10 +80,16 @@ describe('mapSQLValuesToID tests', () => {
     });
 
     test('named fields columns in fk relations can be converted to corresponding mbql field IDs' , async () => {
-      question.mbql.source_table = ['table1'];
-      question.mbql.fields = [['fk->', 'abc', 'table2.cba'], ['fk->', 'cde', 'table2.edc']];
-      question.mbql.columns = [['abc'], ['cde']];
-      question.mbql.foreign_columns = [['table2', 'cba'], ['table2', 'edc']];
+      const question = {
+        ...defaultQuestion,
+        mbql:{
+          ...defaultQuestion.mbql,
+          source_table: ['table1'],
+          fields: [['fk->', 'abc', 'table2.cba'], ['fk->', 'cde', 'table2.edc']],
+          columns: [['abc'], ['cde']],
+          foreign_columns: [['table2', 'cba'], ['table2', 'edc']]
+        }
+      };
 
       callAPI.mockImplementation(() => returnValue);
       const session = {id: 12345};
@@ -98,9 +111,15 @@ describe('mapSQLValuesToID tests', () => {
 
   describe('filter (where clause) tests', () => {
     test('named filter columns can be converted to corresponding mbql field IDs' , async () => {
-      question.mbql.source_table = ['table1'];
-      question.mbql.filter = [['=', 'abc', 1]]
-      question.mbql.columns = [['abc']];
+      const question = {
+        ...defaultQuestion,
+        mbql:{
+          ...defaultQuestion.mbql,
+          source_table: ['table1'],
+          filter: [['=', 'abc', 1]],
+          columns: [['abc']]
+        }
+      };
 
       callAPI.mockImplementation(() => returnValue);
       const session = {id: 12345};
@@ -120,10 +139,16 @@ describe('mapSQLValuesToID tests', () => {
     });
 
     test('named filter columns with foreign keys can be converted to corresponding mbql field IDs' , async () => {
-      question.mbql.source_table = ['table1'];
-      question.mbql.filter = [['=', ['fk->', 'abc', 'table2.cba'], 1]]
-      question.mbql.columns = [['abc']];
-      question.mbql.foreign_columns = [['table2', 'cba']];
+      const question = {
+        ...defaultQuestion,
+        mbql:{
+          ...defaultQuestion.mbql,
+          source_table: ['table1'],
+          filter: [['=', ['fk->', 'abc', 'table2.cba'], 1]],
+          columns: [['abc']],
+          foreign_columns: [['table2', 'cba']]
+        }
+      };
 
       callAPI.mockImplementation(() => returnValue);
       const session = {id: 12345};
@@ -145,9 +170,15 @@ describe('mapSQLValuesToID tests', () => {
 
   describe('breakout (group by) & order by tests', () => {
     test('named breakout columns can be converted to corresponding mbql field IDs' , async () => {
-      question.mbql.source_table = ['table1'];
-      question.mbql.breakout = ['abc']
-      question.mbql.columns = [['abc']];
+      const question = {
+        ...defaultQuestion,
+        mbql:{
+          ...defaultQuestion.mbql,
+          source_table: ['table1'],
+          breakout: ['abc'],
+          columns: [['abc']]
+        }
+      };
 
       callAPI.mockImplementation(() => returnValue);
       const session = {id: 12345};
@@ -167,10 +198,16 @@ describe('mapSQLValuesToID tests', () => {
     });
 
     test('named breakout columns with foreign keys can be converted to corresponding mbql field IDs' , async () => {
-      question.mbql.source_table = ['table1'];
-      question.mbql.breakout = [['fk->', 'abc', 'table2.cba']]
-      question.mbql.columns = [['abc']];
-      question.mbql.foreign_columns = [['table2', 'cba']];
+      const question = {
+        ...defaultQuestion,
+        mbql:{
+          ...defaultQuestion.mbql,
+          source_table: ['table1'],
+          breakout: [['fk->', 'abc', 'table2.cba']],
+          columns: [['abc']],
+          foreign_columns: [['table2', 'cba']]
+        }
+      };
 
       callAPI.mockImplementation(() => returnValue);
       const session = {id: 12345};
@@ -190,9 +227,15 @@ describe('mapSQLValuesToID tests', () => {
     });
 
     test('named order-by columns can be converted to corresponding mbql field IDs' , async () => {
-      question.mbql.source_table = ['table1'];
-      question.mbql['order-by'] = ['abc']
-      question.mbql.columns = [['abc']];
+      const question = {
+        ...defaultQuestion,
+        mbql:{
+          ...defaultQuestion.mbql,
+          source_table: ['table1'],
+          ['order-by']: ['abc'],
+          columns: [['abc']]
+        }
+      };
 
       callAPI.mockImplementation(() => returnValue);
       const session = {id: 12345};
@@ -212,10 +255,16 @@ describe('mapSQLValuesToID tests', () => {
     });
 
     test('named ordery-by columns with foreign keys can be converted to corresponding mbql field IDs' , async () => {
-      question.mbql.source_table = ['table1'];
-      question.mbql['order-by'] = [['ASC', ['fk->', 'abc', 'table2.cba']]]
-      question.mbql.columns = [['abc']];
-      question.mbql.foreign_columns = [['table2', 'cba']];
+      const question = {
+        ...defaultQuestion,
+        mbql:{
+          ...defaultQuestion.mbql,
+          source_table: ['table1'],
+          ['order-by']: [['ASC', ['fk->', 'abc', 'table2.cba']]],
+          columns: [['abc']],
+          foreign_columns: [['table2', 'cba']]
+        }
+      };
 
       callAPI.mockImplementation(() => returnValue);
       const session = {id: 12345};
@@ -237,9 +286,15 @@ describe('mapSQLValuesToID tests', () => {
 
   describe('aggregation tests', () => {
     test('named aggregation columns in simple queries (no fk relations) can be converted to corresponding mbql field IDs' , async () => {
-      question.mbql.source_table = ['table1'];
-      question.mbql.aggregation = [['SUM', 'abc']];
-      question.mbql.columns = [['abc']];
+      const question = {
+        ...defaultQuestion,
+        mbql:{
+          ...defaultQuestion.mbql,
+          source_table: ['table1'],
+          aggregation: [['SUM', 'abc']],
+          columns: [['abc']]
+        }
+      };
 
       callAPI.mockImplementation(() => returnValue);
       const session = {id: 12345};
@@ -259,10 +314,16 @@ describe('mapSQLValuesToID tests', () => {
     });
 
     test('named aggregation columns with fk relations can be converted to corresponding mbql field IDs' , async () => {
-      question.mbql.source_table = ['table1'];
-      question.mbql.aggregation = [['SUM', ['fk->', 'abc', 'table2.cba']]];
-      question.mbql.columns = [['abc']];
-      question.mbql.foreign_columns = [['table2', 'cba']];
+      const question = {
+        ...defaultQuestion,
+        mbql:{
+          ...defaultQuestion.mbql,
+          source_table: ['table1'],
+          aggregation: [['SUM', ['fk->', 'abc', 'table2.cba']]],
+          columns: [['abc']],
+          foreign_columns: [['table2', 'cba']]
+        }
+      };
 
       callAPI.mockImplementation(() => returnValue);
       const session = {id: 12345};

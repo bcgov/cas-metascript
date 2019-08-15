@@ -5,6 +5,7 @@ let restore;
 
 const record = setupRecorder({ mode: 'record' });
 
+//TODO: check URL -> TEST_URL get URL from nock fixture else process.env
 describe('callAPI() tests', () => {
   test('callAPI fails with a bad session id', async () => {
     restore = mockedEnv({

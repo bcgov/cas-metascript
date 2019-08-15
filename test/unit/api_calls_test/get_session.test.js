@@ -3,7 +3,7 @@ const { setupRecorder } = require('nock-record');
 const getSession = require('../../../api_calls/get_session');
 
 const record = setupRecorder({ mode: 'record' });
-
+// Get the URL from the nock fixture a la METABASE_USERNAME
 describe('getSession() tests', () => {
   test('getSession fails with bad credentials', async () => {
     const restore = mockedEnv({

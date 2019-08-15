@@ -10,8 +10,8 @@ const commander = require('commander');
 const program = new commander.Command();
 program.version('0.0.1');
 
-// Add errors for conflicting options here
 
+//give program a -D
 program
 .command('pull')
 .description('get entities from Metabase')
@@ -54,8 +54,8 @@ program
           await getQuestionsFromMetabase(pull.opts(), brokenIDs);
         }
         else {
-          console.log('Metabase contains broken questions:')
-          console.log(brokenQuestions)
+          console.error('Metabase contains broken questions:')
+          console.error(brokenQuestions)
           console.log('exiting..');
           console.log(pull.help());
           process.exit(1);
@@ -111,8 +111,8 @@ program
       await saveQuestionsToMetabase(push.opts())
       const brokenQuestions = await getBrokenQuestions(push.databaseId);
       if (brokenQuestions.length > 0) {
-        console.log('Metabase contains broken questions:')
-        console.log(brokenQuestions)
+        console.error('Metabase contains broken questions:')
+        console.error(brokenQuestions)
         console.log('exiting..');
         console.log(push.help());
         process.exit(1);
@@ -134,10 +134,10 @@ program
       console.log('no broken questions')
       process.exit(0);
     } else {
-      console.log('Broken questions: [metabaseID_questionName]')
-      console.log(broken);
+      console.error('Broken questions: [metabaseID_questionName]')
+      console.error(broken);
       process.exit(1);
     }
   })();
-})
+});
 program.parse(process.argv);

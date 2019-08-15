@@ -8,6 +8,7 @@ const util = require('util');
 jest.setTimeout(30000);
 const directory = path.join(__dirname, 'test_metabase_dashboards_directory');
 
+// TODO: same as get q's
 afterAll(() => rmdir(directory, error => {}));
 
 describe('getDashboardsFromMetabase Integration', () => {
