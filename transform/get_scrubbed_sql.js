@@ -42,7 +42,7 @@ async function getScrubbedSQL(question, session) {
     let sqlFromMetabase;
     let sqlParams;
       // Two different places to retrieve the native sql depending on the type of query
-      if (queryData.data) {
+      if (queryData.data.native_form) {
         sqlFromMetabase = queryData.data.native_form.query;
         sqlParams = queryData.data.native_form.params;
       }

@@ -14,14 +14,14 @@ async function getBrokenQuestions(database_id) {
     // const session = JSON.parse(process.env.SESSION);
     const brokenCards = [];
     const allDatabaseCards = await callAPI(session, '/card/', 'GET', null, {database: database_id});
-
+    
     for (let i = 0; i < allDatabaseCards.length; i++) {
     const queryData = await callAPI(session, `/card/${allDatabaseCards[i].id}/query`, 'POST');
+    console.log(`Checking Card: ${allDatabaseCards[i].id}`);
       if (queryData.error) {
         brokenCards.push(`${allDatabaseCards[i].id}_${allDatabaseCards[i].name}`);
       }
     }
-
     return brokenCards;
   }
   catch(e) { console.error(e); }
