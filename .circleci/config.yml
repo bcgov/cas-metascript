@@ -35,7 +35,7 @@ jobs:
       - run:
           name: Run tests
           environment:
-            URL: https://cas-metascript-wksv3k-tools.pathfinder.gov.bc.ca/api
+            TEST_URL: https://cas-metascript-wksv3k-tools.pathfinder.gov.bc.ca/api
             QUESTION_PATH: ./test_questions
             DATABASE_ID: 1
           command: yarn test

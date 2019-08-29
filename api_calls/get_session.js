@@ -15,7 +15,9 @@ async function getSession({force = false}={}) {
     password
   }
 
-  const url = `${process.env.URL}/session`;
+  let url = `${process.env.URL}/session`;
+  if (process.env.NODE_ENV === 'test')
+    url = `${process.env.TEST_URL}/session`;
 
   const param = {
     headers: {
