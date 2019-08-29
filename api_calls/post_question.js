@@ -27,8 +27,10 @@ async function postQuestion(apiEndpoint, question, session, method) {
       dataset_query: data
     }
   }
-
-  const url = `${process.env.URL}${apiEndpoint}`;
+  
+  let url = `${process.env.URL}${apiEndpoint}`;
+  if (process.env.NODE_ENV === 'test')
+    url = `${process.env.TEST_URL}${apiEndpoint}`;
 
   const param = {
     headers:{
